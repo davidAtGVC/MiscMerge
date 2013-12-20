@@ -192,6 +192,12 @@
 		0547E267186494AB00C9EB24 /* MiscMergeFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeFunctions.m; sourceTree = "<group>"; };
 		0547E268186494AB00C9EB24 /* MiscMergeTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiscMergeTemplate.h; sourceTree = "<group>"; };
 		0547E269186494AB00C9EB24 /* MiscMergeTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeTemplate.m; sourceTree = "<group>"; };
+		0547E2791864A12900C9EB24 /* GVCDebug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = GVCDebug.xcconfig; sourceTree = "<group>"; };
+		0547E27A1864A12900C9EB24 /* GVCDebugTest.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = GVCDebugTest.xcconfig; sourceTree = "<group>"; };
+		0547E27B1864A12900C9EB24 /* GVCRelease.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = GVCRelease.xcconfig; sourceTree = "<group>"; };
+		0547E27C1864A12900C9EB24 /* MiscKit License Notes.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = "MiscKit License Notes.markdown"; sourceTree = "<group>"; };
+		0547E27D1864A12900C9EB24 /* MiscKit License.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = "MiscKit License.markdown"; sourceTree = "<group>"; };
+		0547E27E1864A12900C9EB24 /* MiscMerge.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = MiscMerge.rtf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,6 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				0547E1B91864926A00C9EB24 /* MiscMerge */,
+				0547E2781864A12900C9EB24 /* Resources */,
 				0547E1CE1864926B00C9EB24 /* MiscMergeTests */,
 				0547E1B21864926A00C9EB24 /* Frameworks */,
 				0547E1B11864926A00C9EB24 /* Products */,
@@ -381,6 +388,19 @@
 				0547E2231864949B00C9EB24 /* _MiscMergeWhileCommand.m */,
 			);
 			path = Commands;
+			sourceTree = "<group>";
+		};
+		0547E2781864A12900C9EB24 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0547E2791864A12900C9EB24 /* GVCDebug.xcconfig */,
+				0547E27A1864A12900C9EB24 /* GVCDebugTest.xcconfig */,
+				0547E27B1864A12900C9EB24 /* GVCRelease.xcconfig */,
+				0547E27C1864A12900C9EB24 /* MiscKit License Notes.markdown */,
+				0547E27D1864A12900C9EB24 /* MiscKit License.markdown */,
+				0547E27E1864A12900C9EB24 /* MiscMerge.rtf */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -607,6 +627,7 @@
 /* Begin XCBuildConfiguration section */
 		0547E1D61864926B00C9EB24 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0547E2791864A12900C9EB24 /* GVCDebug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -644,6 +665,7 @@
 		};
 		0547E1D71864926B00C9EB24 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0547E27B1864A12900C9EB24 /* GVCRelease.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -705,6 +727,7 @@
 		};
 		0547E1DC1864926B00C9EB24 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0547E27A1864A12900C9EB24 /* GVCDebugTest.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MiscMerge.framework/Versions/A/MiscMerge";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -727,6 +750,7 @@
 		};
 		0547E1DD1864926B00C9EB24 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0547E27A1864A12900C9EB24 /* GVCDebugTest.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MiscMerge.framework/Versions/A/MiscMerge";
 				COMBINE_HIDPI_IMAGES = YES;
