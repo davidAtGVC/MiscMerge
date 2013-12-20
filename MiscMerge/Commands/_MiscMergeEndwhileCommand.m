@@ -27,7 +27,7 @@
 
     [self eatKeyWord:@"endwhile" fromScanner:aScanner isOptional:NO];
 
-    if (![whileCommand isKindOfCommandClass:@"While"])
+    if ([whileCommand isKindOfCommandClass:@"While"] == NO)
     {
         [template reportParseError:@"Mismatched endwhile command"];
     }

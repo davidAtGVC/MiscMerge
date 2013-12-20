@@ -23,38 +23,35 @@
 
 - init
 {
-    [super init];
-    commandBlock = [[MiscMergeCommandBlock alloc] initWithOwner:self];
+    self = [super init];
+    if ( self != nil )
+    {
+        [self setCommandBlock:[[MiscMergeCommandBlock alloc] initWithOwner:self]];
+    }
     return self;
-}
-
-- (void)dealloc
-{
-    [expression release];
-    [commandBlock release];
-    [super dealloc];
 }
 
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
     [self eatKeyWord:@"while" fromScanner:aScanner isOptional:NO];
-    expression = [[self getExpressionFromScanner:aScanner] retain];
-    [template pushCommandBlock:commandBlock];
+    [self setExpression:[self getExpressionFromScanner:aScanner]];
+    [template pushCommandBlock:[self commandBlock]];
 
     return YES;
 }
 
 - (void)handleEndWhileInTemplate:(MiscMergeTemplate *)template
 {
-    [template popCommandBlock:commandBlock];
+    [template popCommandBlock:[self commandBlock]];
 }
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
     MiscMergeCommandExitType exitCode = MiscMergeCommandExitNormal;
 
-    while (exitCode != MiscMergeCommandExitBreak && [expression evaluateAsBoolWithEngine:aMerger]) {
-        exitCode = [aMerger executeCommandBlock:commandBlock];
+    while (exitCode != MiscMergeCommandExitBreak && [[self expression] evaluateAsBoolWithEngine:aMerger])
+    {
+        exitCode = [aMerger executeCommandBlock:[self commandBlock]];
     }
 
     return MiscMergeCommandExitNormal;

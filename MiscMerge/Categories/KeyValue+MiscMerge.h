@@ -18,7 +18,7 @@
 
 @interface NSObject (MiscMergeHasKey)
 
-- (BOOL)hasMiscMergeKey:(NSString *)key;
-- (BOOL)hasMiscMergeKeyPath:(NSString *)keyPath;
+- (BOOL)mm_hasMiscMergeKey:(NSString *)key;
+- (BOOL)mm_hasMiscMergeKeyPath:(NSString *)keyPath;
 
 @end

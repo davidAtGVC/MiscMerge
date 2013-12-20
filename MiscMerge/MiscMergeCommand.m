@@ -16,7 +16,6 @@
 
 #import "MiscMergeCommand.h"
 #import <Foundation/NSCharacterSet.h>
-//#import <Foundation/NSUtilities.h>
 #import <Foundation/NSArray.h>
 #import <stdlib.h>  // NULL on OSX
 #import "NSScanner+MiscMerge.h"
@@ -64,14 +63,8 @@
 "*/
 - (BOOL)parseFromString:(NSString *)aString template:(MiscMergeTemplate *)template
 {
-    static NSCharacterSet *whiteSet = nil;
     NSScanner *scanner = [NSScanner scannerWithString:aString];
-
-    /* +whitespaceAndNewlineCharacterSet doesn't have \r ! */
-    if (whiteSet == nil)
-        whiteSet = [[NSCharacterSet characterSetWithCharactersInString:@" \t\n\r\v\f"] retain];
-    [scanner setCharactersToBeSkipped:whiteSet];
-
+    [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     return [self parseFromScanner:scanner template:template];
 }
 
@@ -108,8 +101,7 @@
  * NO is returned to tell the caller if the required key word was found or
  * not, no matter what the value of %{optional} was.
 "*/
-- (BOOL)eatKeyWord:(NSString *)aKeyWord fromScanner:(NSScanner *)scanner
-        isOptional:(BOOL)optional
+- (BOOL)eatKeyWord:(NSString *)aKeyWord fromScanner:(NSScanner *)scanner isOptional:(BOOL)optional
 {
     NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
     NSUInteger origLocation = [scanner scanLocation];
@@ -143,22 +135,22 @@
 
 - _getQuotedArgumentStringFromScanner:(NSScanner *)scanner toEnd:(BOOL)endFlag quoteCharacter:(char)quoteCharacter
 {
-    NSMutableString *parsedString = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString *parsedString = [[NSMutableString alloc] init];
     NSCharacterSet *stopSet = [NSCharacterSet characterSetWithCharactersInString:[NSString stringWithFormat:@"\\%c", quoteCharacter]];
-    NSCharacterSet *origSkipSet = [[[scanner charactersToBeSkipped] retain] autorelease];
+    NSCharacterSet *origSkipSet = [scanner charactersToBeSkipped];
     NSString *workString = nil;
     NSString *quoteCharString = [NSString stringWithFormat:@"%c", quoteCharacter];
 
     [scanner setCharactersToBeSkipped:nil]; //Don't skip spaces inside of quotes
-    [scanner scanCharacter:quoteCharacter]; //scan past open quote if its there
+    [scanner mm_scanCharacter:quoteCharacter]; //scan past open quote if its there
 
     while (![scanner isAtEnd]) {
         if ([scanner scanUpToCharactersFromSet:stopSet intoString:&workString])
             [parsedString appendString:workString];
 
-        if ([scanner scanCharacter:'\\'])
+        if ([scanner mm_scanCharacter:'\\'])
         {
-            if ([scanner scanLetterIntoString:&workString])
+            if ([scanner mm_scanLetterIntoString:&workString])
             {
                 /*" Leave the backslash if not quoting the '"' character */
                 // Need to allow quoted delimiters here as well?
@@ -168,13 +160,13 @@
                 [parsedString appendString:workString];
            }
         }
-        else if ([scanner scanCharacter:quoteCharacter])
+        else if ([scanner mm_scanCharacter:quoteCharacter])
         {
             if (endFlag && ![scanner isAtEnd])
             {
                 [self error_closequote];
                 //[parsedString appendString:[scanner remainingString]];
-                [scanner remainingString];
+                [scanner mm_remainingString];
             }
 
             [scanner setCharactersToBeSkipped:origSkipSet];
@@ -200,9 +192,9 @@
  * quoted, the size of the quotes (0, 1, 2) will be returned in %{quotes}.
  * The parsed argument will scanned past in %{scanner}.
 "*/
-- getArgumentStringFromScanner:(NSScanner *)scanner toEnd:(BOOL)endFlag quotes:(int *)quotes
+- getArgumentStringFromScanner:(NSScanner *)scanner toEnd:(BOOL)endFlag quotes:(NSInteger *)quotes
 {
-    char nextCharacter = [scanner peekNextCharacter];
+    char nextCharacter = [scanner mm_peekNextCharacter];
 
     if ( quotes != NULL )
         *quotes = 0;
@@ -214,7 +206,7 @@
     }
     else if (endFlag)
     {
-        return [scanner remainingString];
+        return [scanner mm_remainingString];
     }
     else
     {
@@ -252,7 +244,7 @@
 "*/
 - getPromptFromScanner:(NSScanner *)scanner toEnd:(BOOL)endFlag
 {
-    if ([scanner scanCharacter:'?'])
+    if ([scanner mm_scanCharacter:'?'])
     {
         return [self getArgumentStringFromScanner:scanner toEnd:endFlag];
     }
@@ -272,7 +264,7 @@
 "*/
 - getPromptableArgumentStringFromScanner:(NSScanner *)scanner wasPrompt:(BOOL *)prompt toEnd:(BOOL)endFlag
 {
-    if ([scanner peekNextCharacter] == '?') {
+    if ([scanner mm_peekNextCharacter] == '?') {
         *prompt = YES;
         return [self getPromptFromScanner:scanner toEnd:endFlag];
     } else {
@@ -296,7 +288,7 @@
         return expression;
     }
     else {
-        int quote = 0;
+        NSInteger quote = 0;
         NSString *value = [self getArgumentStringFromScanner:aScanner toEnd:NO quotes:&quote];
 
         if ( value == nil )
@@ -588,7 +580,7 @@
 
 - (BOOL)isKindOfCommandClass:(NSString *)aCommand
 {
-    NSString *realCommand = [[aCommand firstWord] capitalizedString];
+    NSString *realCommand = [[aCommand mm_firstWord] capitalizedString];
     NSString *className = [NSString stringWithFormat:@"_MiscMerge%@Command", realCommand];
     Class theClass = NSClassFromString(className);
 

@@ -19,11 +19,10 @@
 @class MiscMergeCommandBlock;
 
 @interface _MiscMergeIfCommand : MiscMergeCommand
-{
-    MiscMergeExpression *expression;
-    MiscMergeCommandBlock *trueBlock;
-    MiscMergeCommandBlock *elseBlock;
-}
+
+@property (strong, nonatomic) MiscMergeExpression *expression;
+@property (strong, nonatomic) MiscMergeCommandBlock *trueBlock;
+@property (strong, nonatomic) MiscMergeCommandBlock *elseBlock;
 
 - (void)handleElseInTemplate:(MiscMergeTemplate *)template;
 - (void)handleEndifInTemplate:(MiscMergeTemplate *)template;

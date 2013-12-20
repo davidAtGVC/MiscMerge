@@ -20,14 +20,9 @@
 #import "MiscMergeTemplate.h"
 #import "MiscMergeCommandBlock.h"
 #import "MiscMergeEngine.h"
+#import "MiscMergeMacros.h"
 
 @implementation _MiscMergeIncludeCommand
-
-- (void)dealloc
-{
-    [commandBlock release];
-    [super dealloc];
-}
 
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
@@ -41,10 +36,12 @@
     filename = [self getArgumentStringFromScanner:aScanner toEnd:NO];
     startDelim = [self getArgumentStringFromScanner:aScanner toEnd:NO];
 
-    if ( [startDelim length] > 0 ) {
+    if ( mm_IsEmpty(startDelim) == NO )
+    {
         endDelim = [self getArgumentStringFromScanner:aScanner toEnd:NO];
 
-        if ( [endDelim length] == 0 ) {
+        if ( [endDelim length] == 0 )
+        {
             [template reportParseError:@"%@: Must specify an end delimiter if specifying a start delimiter.", [self class]];
             startDelim = nil;
         }
@@ -52,23 +49,36 @@
 
     resolvedFilename = [template resolveTemplateFilename:filename];
 
-    if ([resolvedFilename length] > 0)
-        fileString = [[[NSString alloc] initWithContentsOfFile:resolvedFilename] autorelease];
+    if (mm_IsEmpty(resolvedFilename) == NO)
+    {
+        NSError *err = nil;
+        fileString = [NSString stringWithContentsOfFile:resolvedFilename encoding:NSUTF8StringEncoding error:&err];
+        if ( err != nil )
+        {
+            [template reportParseError:@"%@: Error loading from file '%@'\n%@", [self class], resolvedFilename, err];
+            return NO;
+        }
+    }
 
-    if (fileString)
+    if (mm_IsEmpty(fileString) == NO)
     {
         MiscMergeTemplate *newTemplate = [[[template class] alloc] init];
 
         if ( startDelim != nil )
-            [newTemplate setStartDelimiter:startDelim endDelimiter:endDelim];
+        {
+            [newTemplate setStartDelimiter:startDelim];
+            [newTemplate setEndDelimiter:endDelim];
+        }
         else
-            [newTemplate setStartDelimiter:[template startDelimiter] endDelimiter:[template endDelimiter]];
+        {
+            [newTemplate setStartDelimiter:[template startDelimiter]];
+            [newTemplate setEndDelimiter:[template endDelimiter]];
+        }
         
         [newTemplate setFilename:resolvedFilename];
         [newTemplate setDelegate:[template delegate]];
         [newTemplate parseString:fileString];
-        commandBlock = [[newTemplate topLevelCommandBlock] retain];
-        [newTemplate release];
+        [self setCommandBlock:[newTemplate topLevelCommandBlock]];
     }
     else
     {
@@ -80,8 +90,8 @@
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
-    if (commandBlock)
-        return [aMerger executeCommandBlock:commandBlock];
+    if ([self commandBlock])
+        return [aMerger executeCommandBlock:[self commandBlock]];
     return MiscMergeCommandExitNormal;
 }
 

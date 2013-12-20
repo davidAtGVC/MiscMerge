@@ -17,7 +17,6 @@
 #import "MiscMergeTemplate.h"
 #import <Foundation/NSCharacterSet.h>
 #import <Foundation/NSArray.h>
-//#import <Foundation/NSUtilities.h>
 #import <Foundation/NSAutoreleasePool.h>
 #import <Foundation/NSObjCRuntime.h>
 #import "NSString+MiscAdditions.h"
@@ -28,6 +27,14 @@
 #import "_MiscMergeCopyCommand.h"
 #import "_MiscMergeDelayedParseCommand.h"
 #import "MiscMergeFunctions.h"
+#import "MiscMergeMacros.h"
+
+@interface MiscMergeTemplate ()
+@property (strong, nonatomic, readwrite) MiscMergeCommandBlock *topLevelCommandBlock;
+@property (strong, nonatomic) NSMutableArray *commandStack;
+@property (assign, nonatomic) NSUInteger lineNumber;
+@end
+
 
 @implementation MiscMergeTemplate
 /*"
@@ -74,8 +81,12 @@
     //	return @"«";
     /* This works better for whatever reason. Due to some unknown pecularities,
     a constant NSString doesn't work under Windows with Apple's
-    implementation. */
-    return [NSString stringWithCString:"«" encoding:NSUTF8StringEncoding];
+    implementation. 
+     Unicode character      Oct     Dec	Hex     HTML
+     «	acute accent        0264	180	0xB4	&acute;
+     */
+    unichar achar = 0xB4;
+    return [NSString stringWithCharacters:&achar length:1];
 }
 
 /*"
@@ -86,22 +97,26 @@
 {
     //	return @")";
     //	return @"»";
-    /* This works better than a constant NSString for whatever reason.  See above. */
-    return [NSString stringWithCString:"»" encoding:NSUTF8StringEncoding];
+    /* This works better than a constant NSString for whatever reason.  See above. 
+     Unicode character              Oct     Dec	Hex     HTML
+     » feminine ordinal indicator	0252	170	0xAA	&ordf;
+     */
+    unichar achar = 0xAA;
+    return [NSString stringWithCharacters:&achar length:1];
 }
 
 /*" Creates a new, autoreleased MiscMergeTemplate. "*/
-+ template
++ (instancetype)template
 {
-    return [[[self alloc] init] autorelease];
+    return [[self alloc] init];
 }
 
 /*"
  * Creates a new, autoreleased MiscMergeTemplate, and parses aString.
 "*/
-+ templateWithString:(NSString *)aString
++ (instancetype)templateWithString:(NSString *)aString
 {
-    return [[[self alloc] initWithString:aString] autorelease];
+    return [[self alloc] initWithString:aString];
 }
 
 /*"
@@ -111,11 +126,14 @@
 "*/
 - init
 {
-    [super init];
-    topLevelCommands = [[MiscMergeCommandBlock alloc] init];
-    commandStack = [[NSMutableArray arrayWithObject:topLevelCommands] retain];
-    startDelimiter = [[[self class] defaultStartDelimiter] retain];
-    endDelimiter = [[[self class] defaultEndDelimiter] retain];
+    self = [super init];
+    if ( self != nil )
+    {
+        [self setTopLevelCommandBlock:[[MiscMergeCommandBlock alloc] init]];
+        [self setCommandStack:[NSMutableArray arrayWithObject:[self topLevelCommandBlock]]];
+        [self setStartDelimiter:[[self class] defaultStartDelimiter]];
+        [self setEndDelimiter:[[self class] defaultEndDelimiter]];
+    }
     return self;
 }
 
@@ -124,8 +142,11 @@
 "*/
 - initWithString:(NSString *)string
 {
-    [self init];
-    [self parseString:string];
+    self = [self init];
+    if ( self != nil)
+    {
+        [self parseString:string];
+    }
     return self;
 }
 
@@ -134,100 +155,14 @@
 "*/
 - initWithContentsOfFile:(NSString *)filename
 {
-    NSString *fileString = [[[NSString alloc] initWithContentsOfFile:filename] autorelease];
-    if (fileString == nil) NSLog(@"%@: Could not read template file %@", [self class], filename);
-    return [self initWithString:fileString];
+    self = [self init];
+    if ( self != nil)
+    {
+        [self parseContentsOfFile:filename];
+    }
+    return self;
 }
 
-- (void)dealloc
-{
-    [commandStack release];
-    [topLevelCommands release];
-    [startDelimiter release];
-    [endDelimiter release];
-    [_parseStopChars release];
-    [_filename release];
-    [super dealloc];
-}
-
-
-- (id)delegate
-{
-    return _delegate;
-}
-
-- (void)setDelegate:(id)anObject
-{
-    _delegate = anObject;
-}
-
-
-/*" Returns the string used to start a merge command. "*/
-- (NSString *)startDelimiter
-{
-    return startDelimiter;
-}
-
-/*" Returns the string used to end a merge command. "*/
-- (NSString *)endDelimiter
-{
-    return endDelimiter;
-}
-
-
-/*"
- * Sets the strings used to start and end a merge command. %{startDelim}
- * and %{endDelim} can be the same strings, but if they are the same (or
- * one is a prefix of the other), then there will be no ability to have
- * nested commands, so the "delayed" feature will not be available.
-"*/
-- (void)setStartDelimiter:(NSString *)startDelim endDelimiter:(NSString *)endDelim
-{
-    NSString *charString;
-    
-    [startDelimiter autorelease];
-    startDelimiter = [startDelim retain];
-
-    [endDelimiter   autorelease];
-    endDelimiter   = [endDelim retain];
-    
-    [_parseStopChars release];
-    charString = [NSString stringWithFormat:@"\"\\%@%@", [startDelimiter substringToIndex:1], [endDelimiter substringToIndex:1]];
-    _parseStopChars = [NSCharacterSet characterSetWithCharactersInString:charString];
-    [_parseStopChars retain];
-}
-
-
-- (MiscMergeTrimWhitespaceBehavior)trimWhitespaceBehavior
-{
-    return _trimWhitespaceBehavior;
-}
-- (void)setTrimWhitespaceBehavior:(MiscMergeTrimWhitespaceBehavior)flag
-{
-    _trimWhitespaceBehavior = flag;
-}
-
-
-/*"
- * Returns the filename that was used to create the template, or nil if not
- * parsed from a file.  Used for reporting errors.
-"*/
-- (NSString *)filename
-{
-    return _filename;
-}
-
-/*"
- * Sets the filename the template was created from, which is used in
- * reporting errors.  This is normally set by -#parseContentsOfFile:, but
- * this method can be used if -#parseString: needs to be called directly
- * but the original source did come from a file.
-"*/
-- (void)setFilename:(NSString *)filename
-{
-    [_filename autorelease];
-    _filename = [filename retain];
-}
 
 /*"
  * Pushes aBlock on the command stack.  aBlock becomes the current command
@@ -235,7 +170,7 @@
 "*/
 - (void)pushCommandBlock:(MiscMergeCommandBlock *)aBlock
 {
-    [commandStack addObject:aBlock];
+    [[self commandStack] addObject:aBlock];
 }
 
 /*"
@@ -247,7 +182,7 @@
 "*/
 - (void)popCommandBlock:(MiscMergeCommandBlock *)aBlock
 {
-    if (aBlock && [commandStack lastObject] != aBlock)
+    if (aBlock && [[self commandStack] lastObject] != aBlock)
     {
         [self reportParseError:@"Error, command stack mismatch"];
         return;
@@ -262,13 +197,13 @@
 "*/
 - (void)popCommandBlock
 {
-    if ([commandStack count] <= 1)
+    if ([[self commandStack] count] <= 1)
     {
         [self reportParseError:@"Error, cannot pop last command block"];
         return;
     }
 
-    [commandStack removeLastObject];
+    [[self commandStack] removeLastObject];
 }
 
 /*"
@@ -278,25 +213,16 @@
 "*/
 - (MiscMergeCommandBlock *)currentCommandBlock
 {
-    return [commandStack lastObject];
-}
-
-/*"
- * Returns the "top level" command block of the MiscMergeTemplate, which is
- * basically the series of commands to be executed to generate the merge
- * file.  The top level block is always at the bottom of the command stack.
-"*/
-- (MiscMergeCommandBlock *)topLevelCommandBlock
-{
-    return topLevelCommands;
+    return [[self commandStack] lastObject];
 }
 
 - (NSString *)resolveTemplateFilename:(NSString *)resolveName
 {
     NSString *resolvedName = nil;
+    id delegate = [self delegate];
     
-    if ( [_delegate respondsToSelector:@selector(mergeTemplate:resolveTemplateFilename:)] )
-        resolvedName = [_delegate mergeTemplate:self resolveTemplateFilename:resolveName];
+    if ( [delegate respondsToSelector:@selector(mergeTemplate:resolveTemplateFilename:)] )
+        resolvedName = [delegate mergeTemplate:self resolveTemplateFilename:resolveName];
 
     return ( [resolvedName length] > 0 ) ? resolvedName : resolveName;
 }
@@ -321,37 +247,9 @@
     return theClass;
 }
 
-/*"
- * Given the command string %{aCommand}, this method determines which
- * MiscMergeCommand subclass implements the merge command.  It returns the
- * class object needed to create instances of the MiscMergeCommand
- * subclass.
- *
- * This method works by asking the runtime if it can find Objective-C
- * classes with specific names.  The name that is looked up is build from
- * the first word found in %{aCommand}.  The first word is turned to all
- * lower case, with the first letter upper case, and then sandwiched
- * between "Merge" and "Command".  For example, the merge command "«if xxx
- * = y»" has the word "if" as the first word.  Thus, the class
- * "MergeIfCommand" will be searched for. If the desired class cannot be
- * found, then it is assumed that the merge command is giving the name of a
- * field which should be inserted into the output document.
- *
- * To avoid name space conflicts, all internal merge commands actually use
- * a slightly different name.  Thus, there really is no "MergeIfCommand" to
- * be found.  This method, when it doesn't find the "MergeIfCommand" class,
- * will search for another class, with a private name.  That class will be
- * found. (If it wasn't found, then the default "field" command class would
- * be returned.)  This allows a programmer to override any built in
- * command. To override the "if" command, simply create a "MergeIfCommand"
- * class and it will be found before the built in class.  If a programmer
- * wishes to make a particular command, such as "omit", inoperative, this
- * technique may be used to override with a MiscMergeCommand subclass that
- * does nothing.
-"*/
 - (Class)classForCommand:(NSString *)aCommand
 {
-    return [self _classForCommand:[[aCommand firstWord] capitalizedString]];
+    return [self _classForCommand:[[aCommand mm_firstWord] capitalizedString]];
 }
 
 
@@ -368,12 +266,10 @@
     errorMessage = [[NSString alloc] initWithFormat:format arguments:args];
     va_end(args);
 
-    if (_filename != nil)
-        NSLog(@"%@: %d: %@", _filename, _lineNumber, errorMessage);
+    if ([self filename] != nil)
+        NSLog(@"%@: %lu: %@", [self filename], (unsigned long)[self lineNumber], errorMessage);
     else
-        NSLog(@"Line %d: %@", _lineNumber, errorMessage);
-
-    [errorMessage release];
+        NSLog(@"Line %lu: %@", (unsigned long)[self lineNumber], errorMessage);
 }
 
 - (void)_addCommand:(MiscMergeCommand *)command
@@ -385,14 +281,15 @@
 {
     NSString *copyString = betweenString;
 
-    switch ( _trimWhitespaceBehavior ) {
+    switch ( [self trimWhitespaceBehavior] )
+    {
         case MiscMergeKeepNonBlankWhitespace:
-            if ( [betweenString isBlank] )
+            if ( [betweenString mm_isBlank] )
                 copyString = nil;
             break;
             
         case MiscMergeTrimWhitespace:
-            copyString = [copyString stringByTrimmingWhitespace];
+            copyString = [copyString mm_stringByTrimmingWhitespace];
             break;
 
         case MiscMergeIgnoreCommandSpaces:
@@ -406,15 +303,15 @@
     /* Check to see if we are ignoring completely blank space or wanting to trim
     the space off of between strings. In both cases we then see if the trimmed string
     would result in no data written to the output, then we don't do anything here. */
-    if ( [copyString length] > 0 ) {
+    if ( mm_IsEmpty(copyString) == NO )
+    {
         id command = [[[self _classForCommand:@"Copy"] alloc] init];
         /* Pass the trimmed string, or the passed in string depending if we are trimming strings */
         [command parseFromRawString:copyString];
         [self _addCommand:command];
-        [command release];
     }
 
-    _lineNumber += [betweenString numOfString:@"\n"];
+    _lineNumber += [betweenString mm_numOfString:@"\n"];
 }
 
 - (void)_addCommandString:(NSString *)commandString
@@ -423,8 +320,8 @@
     id command = [[commandClass alloc] init];
     [self _addCommand:command];
     [command parseFromString:commandString template:self];
-    [command release];
-    _lineNumber += [commandString numOfString:@"\n"];
+
+    _lineNumber += [commandString mm_numOfString:@"\n"];
 }
 
 /*"
@@ -432,11 +329,21 @@
 "*/
 - (void)parseContentsOfFile:(NSString *)filename
 {
-    NSString *string = [[NSString alloc] initWithContentsOfFile:filename];
-    if (string == nil) NSLog(@"%@: Could not read template file %@", [self class], filename);
-    [self setFilename:filename];
-    [self parseString:string];
-    [string release];
+    NSError *err = nil;
+    NSString *contentString = [NSString stringWithContentsOfFile:filename encoding:NSUTF8StringEncoding error:&err];
+    if ( err != nil )
+    {
+        NSLog(@"%@: Error reading template file %@\n%@", [self class], filename, err);
+    }
+    else if ( mm_IsEmpty(contentString) == YES)
+    {
+        NSLog(@"%@: Could not read template file or content blank %@", [self class], filename);
+    }
+    else
+    {
+        [self setFilename:filename];
+        [self parseString:contentString];
+    }
 }
 
 /*"
@@ -444,13 +351,16 @@
 "*/
 - (void)parseString:(NSString *)string
 {
-    NSMutableString *accumString = [[[NSMutableString alloc] init] autorelease];
-    NSAutoreleasePool *localPool = [[NSAutoreleasePool alloc] init];
+    NSMutableString *accumString = [[NSMutableString alloc] init];
     NSScanner *scanner = [NSScanner scannerWithString:string];
     NSString *currString;
-    int nestingLevel = 0;
-    int maxNestingLevel = 0;
+    NSString *startDelimiter = [self startDelimiter];
+    NSString *endDelimiter = [self endDelimiter];
+    NSInteger nestingLevel = 0;
+    NSInteger maxNestingLevel = 0;
     BOOL inQuotes = NO;
+    NSString *charString = [NSString stringWithFormat:@"\"\\%@%@", [startDelimiter substringToIndex:1], [endDelimiter substringToIndex:1]];
+    NSCharacterSet *parseStopChars = [NSCharacterSet characterSetWithCharactersInString:charString];
 
     [scanner setCharactersToBeSkipped:nil];
     _lineNumber = 1;
@@ -458,17 +368,16 @@
     // may want to flush localPool every 50 loops or so...
     while (![scanner isAtEnd])
     {
-        if ([scanner scanUpToCharactersFromSet:_parseStopChars intoString:&currString])
+        if ([scanner scanUpToCharactersFromSet:parseStopChars intoString:&currString])
             [accumString appendString:currString];
 
-        if ([scanner scanString:@"\\"])
+        if ([scanner mm_scanString:@"\\"])
         {
             BOOL     foundDelimiter;
             NSString *delimiter = nil;
 
             /* Look for the delimiters.  As a side effect, move scanner along */
-            foundDelimiter = [scanner scanString:startDelimiter intoString:&delimiter] ||
-                [scanner scanString:endDelimiter intoString:&delimiter];
+            foundDelimiter = [scanner scanString:startDelimiter intoString:&delimiter] || [scanner scanString:endDelimiter intoString:&delimiter];
 
             /*
              * Leave the backslash if we are not quoting a delimiter string
@@ -484,12 +393,12 @@
             if (foundDelimiter)
                 [accumString appendString:delimiter];
         }
-        else if ([scanner scanString:@"\""])
+        else if ([scanner mm_scanString:@"\""])
         {
             [accumString appendString:@"\""];
             if (nestingLevel == 1) inQuotes = !inQuotes;
         }
-        else if (nestingLevel > 0 && [scanner scanString:endDelimiter])
+        else if (nestingLevel > 0 && [scanner mm_scanString:endDelimiter])
         {
             if (nestingLevel > 1)
             {
@@ -501,15 +410,14 @@
                 if (maxNestingLevel > 1)
                 {
                     id command = [[[self _classForCommand:@"DelayedParse"] alloc] init];
-                    _lineNumber += [accumString numOfString:@"\n"];
+                    _lineNumber += [accumString mm_numOfString:@"\n"];
                     [command parseFromString:accumString template:self];
                     [self _addCommand:command];
-                    [command release];
                 }
                 else
                 {
                     if ([accumString length] > 0)
-                        [self _addCommandString:[[accumString copy] autorelease]];
+                        [self _addCommandString:[accumString copy]];
                 }
                 [accumString setString:@""];
                 inQuotes = NO;
@@ -518,7 +426,7 @@
 
             nestingLevel--;
         }
-        else if ([scanner scanString:startDelimiter])
+        else if ([scanner mm_scanString:startDelimiter])
         {
             if (nestingLevel > 0)
             {
@@ -527,14 +435,14 @@
             else
             {
                 if ([accumString length] > 0)
-                    [self _addBetweenString:[[accumString copy] autorelease]];
+                    [self _addBetweenString:[accumString copy]];
                 [accumString setString:@""];
             }
 
             nestingLevel++;
             if (nestingLevel > maxNestingLevel) maxNestingLevel = nestingLevel;
         }
-        else if ([scanner scanLetterIntoString:&currString])
+        else if ([scanner mm_scanLetterIntoString:&currString])
         {
             // If we can scan the end delimiter, it's an error, otherwise
             // it's just a string that starts with the same char as a
@@ -545,10 +453,8 @@
 
     if ([accumString length] > 0)
     {
-        [self _addBetweenString:[[accumString copy] autorelease]];
+        [self _addBetweenString:[accumString copy]];
     }
-
-    [localPool drain];
 }
 
 @end

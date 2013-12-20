@@ -20,15 +20,11 @@
 @class MiscMergeCommand;
 
 @interface MiscMergeCommandBlock : NSObject
-{
-	NSMutableArray *commandArray;
-	id owner;
-}
 
 - initWithOwner:(id)anOwner;
 
-- (NSArray *)commandArray;
-- (id)owner;
+@property (strong, nonatomic, readonly) NSArray *commandArray;
+@property (strong, nonatomic, readonly) id owner;
 
 - (void)addCommand:(MiscMergeCommand *)command;
 - (void)removeCommand:(MiscMergeCommand *)command;

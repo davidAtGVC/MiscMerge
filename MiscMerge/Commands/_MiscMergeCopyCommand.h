@@ -17,9 +17,7 @@
 #import "MiscMergeCommand.h"
 
 @interface _MiscMergeCopyCommand : MiscMergeCommand
-{
-    NSString *theText;
-}
+@property (strong, nonatomic) NSString *theText;
 
 - (void)parseFromRawString:(NSString *)aString;
 

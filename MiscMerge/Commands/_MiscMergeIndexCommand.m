@@ -21,28 +21,23 @@
 
 @implementation _MiscMergeIndexCommand
 
-- (void)dealloc
-{
-    [arrayField release];
-    [super dealloc];
-}
-
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
     [self eatKeyWord:@"index" fromScanner:aScanner isOptional:NO];
-    arrayField = [[self getArgumentStringFromScanner:aScanner toEnd:NO quotes:&arrayQuote] retain];
-    theIndex = [[self getPrimaryExpressionFromScanner:aScanner] retain];
+    [self setArrayField:[self getArgumentStringFromScanner:aScanner toEnd:NO quotes:&_arrayQuote]];
+    [self setTheIndex:[self getPrimaryExpressionFromScanner:aScanner]];
     return YES;
 }
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
-    id theArray = [aMerger valueForField:arrayField quoted:arrayQuote];
+    id theArray = [aMerger valueForField:[self arrayField] quoted:[self arrayQuote]];
 
-    if ( [theArray respondsToSelector:@selector(objectAtIndex:)] ) {
-        int lookupIndex = [theIndex evaluateAsIntWithEngine:aMerger];
+    if ( [theArray respondsToSelector:@selector(objectAtIndex:)] )
+    {
+        NSInteger lookupIndex = [[self theIndex] evaluateAsIntegerWithEngine:aMerger];
 
-        if ( (lookupIndex >= 0) && (lookupIndex < [theArray count]) ) {
+        if ( (lookupIndex >= 0) && (lookupIndex < (NSInteger)[theArray count]) ) {
             [aMerger appendToOutput:[theArray objectAtIndex:lookupIndex]];
         }
     }

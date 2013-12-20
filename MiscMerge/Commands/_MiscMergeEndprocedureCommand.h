@@ -17,8 +17,7 @@
 #import "MiscMergeCommand.h"
 
 @interface _MiscMergeEndprocedureCommand : MiscMergeCommand
-{
-    NSString *procName;
-}
+
+@property (strong, nonatomic) NSString *procedureName;
 
 @end

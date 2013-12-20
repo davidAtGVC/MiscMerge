@@ -106,7 +106,7 @@ Class MMCommonAnscestorClass(id obj1, id obj2)
 
 NSString *MMStringByTrimmingCommandSpace(NSString *string)
 {
-    if ( [string isBlank] ) {
+    if ( [string mm_isBlank] ) {
         return @"";
     }
     else {

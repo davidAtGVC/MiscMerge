@@ -17,8 +17,7 @@
 #import "MiscMergeCommand.h"
 
 @interface _MiscMergeDebugCommand : MiscMergeCommand
-{
-    NSString *theText;
-}
+
+@property (strong, nonatomic) NSString *theText;
 
 @end

@@ -19,10 +19,9 @@
 @class MiscMergeExpression;
 
 @interface _MiscMergeIndexCommand : MiscMergeCommand
-{
-    NSString *arrayField;
-    int arrayQuote;
-    MiscMergeExpression *theIndex;
-}
+
+@property (strong, nonatomic) NSString *arrayField;
+@property (assign, nonatomic) NSInteger arrayQuote;
+@property (strong, nonatomic) MiscMergeExpression *theIndex;
 
 @end

@@ -17,8 +17,7 @@
 #import "MiscMergeCommand.h"
 
 @interface _MiscMergeIncludeCommand : MiscMergeCommand
-{
-    MiscMergeCommandBlock *commandBlock;
-}
+
+@property (strong, nonatomic) MiscMergeCommandBlock *commandBlock;
 
 @end

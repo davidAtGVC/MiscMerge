@@ -25,7 +25,7 @@
 {
     _MiscMergeIfCommand *ifCommand = [[template currentCommandBlock] owner];
 
-    if (![ifCommand isKindOfCommandClass:@"If"])
+    if ([ifCommand isKindOfCommandClass:@"If"] == NO)
     {
         [template reportParseError:@"Mismatched endif command"];
     }

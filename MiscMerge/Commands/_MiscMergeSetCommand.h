@@ -17,10 +17,9 @@
 #import "MiscMergeCommand.h"
 
 @interface _MiscMergeSetCommand : MiscMergeCommand
-{
-    NSString *field1;
-    MiscMergeExpression *expression;
-}
+
+@property (strong, nonatomic) NSString *field1;
+@property (strong, nonatomic) MiscMergeExpression *expression;
 
 @end
 

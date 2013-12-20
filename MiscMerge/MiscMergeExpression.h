@@ -21,7 +21,8 @@
 #define MiscMergeConditionalOperator 16
 #define MiscMergeMathOperator 32
 
-typedef enum _MiscMergeOperator {
+typedef NS_ENUM(NSUInteger, MiscMergeOperator)
+{
     MiscMergeOperatorNone = 0,
     MiscMergeOperatorIn,
     MiscMergeOperatorNotIn, 
@@ -39,36 +40,23 @@ typedef enum _MiscMergeOperator {
     MiscMergeOperatorDivide,
     MiscMergeOperatorModulus
 
-} MiscMergeOperator;
+};
 
 
 @interface MiscMergeExpression : NSObject
-
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine;
 - (BOOL)evaluateAsBoolWithEngine:(MiscMergeEngine *)anEngine;
-- (int)evaluateAsIntWithEngine:(MiscMergeEngine *)anEngine;
-
+- (NSInteger)evaluateAsIntegerWithEngine:(MiscMergeEngine *)anEngine;
 @end
 
 
 @interface MiscMergeValueExpression : MiscMergeExpression
-{
-    NSString *valueName;
-    int quotes;
-}
-
-+ (MiscMergeValueExpression *)valueName:(NSString *)string quotes:(int)number;
-
++ (MiscMergeValueExpression *)valueName:(NSString *)string quotes:(NSInteger)number;
 @end
 
 
 @interface MiscMergeUnaryOpExpression : MiscMergeExpression
-{
-    MiscMergeExpression *expression;
-}
-
 + (MiscMergeUnaryOpExpression *)expression:(MiscMergeExpression *)expression;
-
 @end
 
 @interface MiscMergeNegativeExpression : MiscMergeUnaryOpExpression
@@ -79,16 +67,7 @@ typedef enum _MiscMergeOperator {
 
 
 @interface MiscMergeBinaryOpExpression : MiscMergeExpression
-{
-    MiscMergeExpression *leftExpression;
-    MiscMergeExpression *rightExpression;
-    MiscMergeOperator operator; 
-}
-
-+ (MiscMergeBinaryOpExpression *)leftExpression:(MiscMergeExpression *)lExpression
-                                       operator:(MiscMergeOperator)operator
-                                rightExpression:(MiscMergeExpression *)rExpression;
-
++ (MiscMergeBinaryOpExpression *)leftExpression:(MiscMergeExpression *)lExpression operator:(MiscMergeOperator)operator rightExpression:(MiscMergeExpression *)rExpression;
 @end
 
 @interface MiscMergeMathExpression : MiscMergeBinaryOpExpression
@@ -102,16 +81,9 @@ typedef enum _MiscMergeOperator {
 
 
 @interface MiscMergeGroupExpression : MiscMergeExpression
-{
-    NSMutableArray *expressions;
-}
-
-+ (MiscMergeGroupExpression *)expression:(MiscMergeExpression *)lExpression
-                           andExpression:(MiscMergeExpression *)rExpression;
++ (MiscMergeGroupExpression *)expression:(MiscMergeExpression *)lExpression andExpression:(MiscMergeExpression *)rExpression;
 + (MiscMergeGroupExpression *)expressions:(NSArray *)list;
-
 - (void)addExpression:(MiscMergeExpression *)expression;
-
 @end
 
 @interface MiscMergeAndExpression : MiscMergeGroupExpression
@@ -121,7 +93,5 @@ typedef enum _MiscMergeOperator {
 @end
 
 @interface MiscMergeListExpression : MiscMergeGroupExpression
-
 - (NSArray *)evaluateAsListWithEngine:(MiscMergeEngine *)anEngine;
-
 @end

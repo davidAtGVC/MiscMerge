@@ -19,15 +19,19 @@
 @class NSArray;
 @class MiscMergeCommandBlock;
 
-@interface _MiscMergeProcedureCommand : MiscMergeCommand
+typedef NS_ENUM(NSInteger, ArgTypes)
 {
-    NSString              *procedureName;
-    MiscMergeCommandBlock *commandBlock;
-    NSMutableArray        *argumentArray;
-    NSMutableArray        *argumentTypes;
-}
+    RequiredArg = 1,
+    OptionalArg = 2,
+    ArrayArg = 3
+};
 
-- (NSString *)procedureName;
+@interface _MiscMergeProcedureCommand : MiscMergeCommand
+
+@property (strong, nonatomic) NSString *procedureName;
+@property (strong, nonatomic) MiscMergeCommandBlock *commandBlock;
+@property (strong, nonatomic) NSMutableArray *argumentArray;
+@property (strong, nonatomic) NSMutableArray *argumentTypes;
 
 /*" Called by the endprocedure command "*/
 - (void)handleEndProcedureInTemplate:(MiscMergeTemplate *)template;

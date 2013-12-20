@@ -22,14 +22,34 @@
 static NSNumber *TRUE_VALUE;
 static NSNumber *FALSE_VALUE;
 
+@interface MiscMergeValueExpression ()
+@property (copy, nonatomic) NSString *valueName;
+@property (assign, nonatomic) NSInteger quotes;
+@end
+
+@interface MiscMergeUnaryOpExpression ()
+@property (strong, nonatomic) MiscMergeExpression *expression;
+@end
+
+@interface MiscMergeBinaryOpExpression ()
+@property (strong, nonatomic) MiscMergeExpression *leftExpression;
+@property (strong, nonatomic) MiscMergeExpression *rightExpression;
+@property (assign, nonatomic) MiscMergeOperator operator;
+@end
+
+@interface MiscMergeGroupExpression ()
+@property (strong, nonatomic) NSMutableArray *expressions;
+@end
+
 @implementation MiscMergeExpression
 
 + (void)initialize
 {
-    if ( TRUE_VALUE == nil ) {
-        TRUE_VALUE = [[NSNumber numberWithBool:YES] retain];
-        FALSE_VALUE = [[NSNumber numberWithBool:NO] retain];
-    }
+    static dispatch_once_t globalSymbolsExpressionDispatch;
+	dispatch_once(&globalSymbolsExpressionDispatch, ^{
+        TRUE_VALUE = [NSNumber numberWithBool:YES];
+        FALSE_VALUE = [NSNumber numberWithBool:NO];
+    });
 }
 
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
@@ -42,7 +62,7 @@ static NSNumber *FALSE_VALUE;
     return MMBoolValueOfObject([self evaluateWithEngine:anEngine]);
 }
 
-- (int)evaluateAsIntWithEngine:(MiscMergeEngine *)anEngine
+- (NSInteger)evaluateAsIntegerWithEngine:(MiscMergeEngine *)anEngine
 {
     return MMIntegerValueOfObject([self evaluateWithEngine:anEngine]);
 }
@@ -50,40 +70,36 @@ static NSNumber *FALSE_VALUE;
 @end
 
 
+
 @implementation MiscMergeValueExpression
 
-- (id)initWithValueName:(NSString *)string quotes:(int)number
+- (id)initWithValueName:(NSString *)string quotes:(NSInteger)number
 {
     self = [super init];
-    if ( self ) {
-        valueName = [string copy];
-        quotes = number;
+    if (self != nil)
+    {
+        [self setValueName:string];
+        [self setQuotes:number];
     }
     return self;
 }
 
-- (void)dealloc
-{
-    [valueName release];
-    [super dealloc];
-}
-
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
 {
-    return [anEngine valueForField:valueName quoted:quotes];
+    return [anEngine valueForField:[self valueName] quoted:[self quotes]];
 }
 
 - (NSString *)description
 {
-    if ( quotes > 0 )
-        return [NSString stringWithFormat:@"MEValue(value='%@',quotes=%d)", valueName, quotes];
+    if ( [self quotes] > 0 )
+        return [NSString stringWithFormat:@"MEValue(value='%@',quotes=%ld)", [self valueName], (long)[self quotes]];
     else
-        return [NSString stringWithFormat:@"MEValue(value='%@')", valueName];
+        return [NSString stringWithFormat:@"MEValue(value='%@')", [self valueName]];
 }
 
-+ (MiscMergeValueExpression *)valueName:(NSString *)string quotes:(int)number
++ (MiscMergeValueExpression *)valueName:(NSString *)string quotes:(NSInteger)number
 {
-    return [[[self alloc] initWithValueName:string quotes:number] autorelease];
+    return [[self alloc] initWithValueName:string quotes:number];
 }
 
 @end
@@ -94,30 +110,26 @@ static NSNumber *FALSE_VALUE;
 - (id)initWithExpression:(MiscMergeExpression *)anExpression
 {
     self = [super init];
-    if ( self ) {
-        expression = [anExpression retain];
+    if (self != nil)
+    {
+        [self setExpression:anExpression];
     }
     return self;
-}
-
-- (void)dealloc
-{
-    [expression release];
-    [super dealloc];
 }
 
 - (NSString *)nameDescription
 {
     return @"MEUnary";
 }
+
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"%@(exp=%@)", [self nameDescription], expression];
+    return [NSString stringWithFormat:@"%@(exp=%@)", [self nameDescription], [self expression]];
 }
 
 + (MiscMergeUnaryOpExpression *)expression:(MiscMergeExpression *)anExpression
 {
-    return [[[self alloc] initWithExpression:anExpression] autorelease];
+    return [[self alloc] initWithExpression:anExpression];
 }
 
 @end
@@ -126,7 +138,7 @@ static NSNumber *FALSE_VALUE;
 
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
 {
-    return [NSNumber numberWithDouble:-MMDoubleValueForObject([expression evaluateWithEngine:anEngine])];
+    return [NSNumber numberWithDouble:-MMDoubleValueForObject([[self expression] evaluateWithEngine:anEngine])];
 }
 
 - (NSString *)nameDescription
@@ -140,7 +152,7 @@ static NSNumber *FALSE_VALUE;
 
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
 {
-    return [NSNumber numberWithBool:!MMDoubleValueForObject([expression evaluateWithEngine:anEngine])];
+    return [NSNumber numberWithBool:!MMDoubleValueForObject([[self expression] evaluateWithEngine:anEngine])];
 }
 
 - (NSString *)nameDescription
@@ -153,45 +165,36 @@ static NSNumber *FALSE_VALUE;
 
 @implementation MiscMergeBinaryOpExpression
 
-- (id)initWithLeftExpression:(MiscMergeExpression *)lExpression
-                    operator:(MiscMergeOperator)anOperator
-             rightExpression:(MiscMergeExpression *)rExpression
+- (id)initWithLeftExpression:(MiscMergeExpression *)lExpression operator:(MiscMergeOperator)anOperator rightExpression:(MiscMergeExpression *)rExpression
 {
     self = [super init];
-    if ( self ) {
-        leftExpression = [lExpression retain];
-        rightExpression = [rExpression retain];
-        operator = anOperator;
+    if ( self != nil )
+    {
+        [self setLeftExpression:lExpression];
+        [self setRightExpression:rExpression];
+        [self setOperator:anOperator];
     }
     return self;
-}
-
-- (void)dealloc
-{
-    [leftExpression release];
-    [rightExpression release];
-    [super dealloc];
 }
 
 - (NSString *)nameDescription
 {
     return @"MEBinary";
 }
+
 - (NSString *)operatorDescription
 {
-    return [NSString stringWithFormat:@"%d", operator];
+    return [NSString stringWithFormat:@"%lu", [self operator]];
 }
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"%@(lexp=%@,op='%@',rexp=%@)", [self nameDescription],
-        leftExpression, [self operatorDescription], rightExpression];
+            [self leftExpression], [self operatorDescription], [self rightExpression]];
 }
 
-+ (MiscMergeBinaryOpExpression *)leftExpression:(MiscMergeExpression *)lExpression
-                                       operator:(MiscMergeOperator)anOperator
-                                rightExpression:(MiscMergeExpression *)rExpression
++ (MiscMergeBinaryOpExpression *)leftExpression:(MiscMergeExpression *)lExpression operator:(MiscMergeOperator)anOperator rightExpression:(MiscMergeExpression *)rExpression
 {
-    return [[[self alloc] initWithLeftExpression:lExpression operator:anOperator rightExpression:rExpression] autorelease];
+    return [[self alloc] initWithLeftExpression:lExpression operator:anOperator rightExpression:rExpression];
 }
 
 @end
@@ -200,10 +203,11 @@ static NSNumber *FALSE_VALUE;
 
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
 {
-    double lValue = MMDoubleValueForObject([leftExpression evaluateWithEngine:anEngine]);
-    double rValue = MMDoubleValueForObject([rightExpression evaluateWithEngine:anEngine]);
+    double lValue = MMDoubleValueForObject([[self leftExpression] evaluateWithEngine:anEngine]);
+    double rValue = MMDoubleValueForObject([[self rightExpression] evaluateWithEngine:anEngine]);
 
-    switch ( operator ) {
+    switch ( [self operator] )
+    {
         case MiscMergeOperatorAdd:
             return [NSNumber numberWithDouble:(lValue + rValue)];
         case MiscMergeOperatorSubtract:
@@ -213,9 +217,9 @@ static NSNumber *FALSE_VALUE;
         case MiscMergeOperatorDivide:
             return [NSNumber numberWithDouble:(lValue / rValue)];
         case MiscMergeOperatorModulus:
-            return [NSNumber numberWithInt:((int)lValue % (int)rValue)];
+            return [NSNumber numberWithInteger:((NSInteger)lValue % (NSInteger)rValue)];
         default:
-            return [NSNumber numberWithInt:0];
+            return [NSNumber numberWithInteger:0];
     }
 }
 
@@ -226,7 +230,8 @@ static NSNumber *FALSE_VALUE;
 
 - (NSString *)operatorDescription
 {
-    switch ( operator ) {
+    switch ( [self operator] )
+    {
         case MiscMergeOperatorAdd:      return @"+";
         case MiscMergeOperatorSubtract: return @"-";
         case MiscMergeOperatorMultiply: return @"*";
@@ -242,10 +247,10 @@ static NSNumber *FALSE_VALUE;
 
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
 {
-    id leftOperand = [leftExpression evaluateWithEngine:anEngine];
-    id rightOperand = [rightExpression evaluateWithEngine:anEngine];
+    id leftOperand = [[self leftExpression] evaluateWithEngine:anEngine];
+    id rightOperand = [[self rightExpression] evaluateWithEngine:anEngine];
     NSComparisonResult comparison;
-    int returnValue;
+    NSInteger returnValue;
 
     if (leftOperand == nil && rightOperand == nil) {
         comparison = NSOrderedSame;
@@ -263,10 +268,10 @@ static NSNumber *FALSE_VALUE;
         comparison = NSOrderedSame;
     }
     /* Short-circuit for "==" and "!=", since -isEqual: should have done the necessary check. */
-    else if (operator == MiscMergeOperatorEqual) {
+    else if ([self operator] == MiscMergeOperatorEqual) {
         return FALSE_VALUE;
     }
-    else if (operator == MiscMergeOperatorNotEqual) {
+    else if ([self operator] == MiscMergeOperatorNotEqual) {
         return TRUE_VALUE;
     }
     else if ([MMCommonAnscestorClass(leftOperand, rightOperand) instancesRespondToSelector:@selector(compare:)]) {
@@ -280,7 +285,8 @@ static NSNumber *FALSE_VALUE;
      * now that we have comparison results, turn them into a YES/NO
      * depending upon the chosen operator.
      */
-    switch ( operator ) {
+    switch ( [self operator] )
+    {
         case MiscMergeOperatorEqual:
             returnValue = (comparison == NSOrderedSame);
             break;
@@ -321,7 +327,8 @@ static NSNumber *FALSE_VALUE;
 {
     NSString *operatorDescription;
     
-    switch ( operator ) {
+    switch ( [self operator] )
+    {
         case MiscMergeOperatorEqual:              return @"==";
         case MiscMergeOperatorNotEqual:           return @"!=";
         case MiscMergeOperatorLessThanOrEqual:    return @"<=";
@@ -340,16 +347,17 @@ static NSNumber *FALSE_VALUE;
 
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
 {
-    id leftOperand = [leftExpression evaluateWithEngine:anEngine];
+    id leftOperand = [[self leftExpression] evaluateWithEngine:anEngine];
     id rightOperand;
     BOOL returnValue = NO;
 
-    if ( [rightExpression isKindOfClass:[MiscMergeListExpression class]] )
-        rightOperand = [(MiscMergeListExpression *)rightExpression evaluateAsListWithEngine:anEngine];
+    if ( [[self rightExpression] isKindOfClass:[MiscMergeListExpression class]] )
+        rightOperand = [(MiscMergeListExpression *)[self rightExpression] evaluateAsListWithEngine:anEngine];
     else
-        rightOperand = [rightExpression evaluateWithEngine:anEngine];
+        rightOperand = [[self rightExpression] evaluateWithEngine:anEngine];
 
-    if ( [rightOperand isKindOfClass:[NSArray class]] ) {
+    if ( [rightOperand isKindOfClass:[NSArray class]] )
+    {
         NSEnumerator *enumerator = [rightOperand objectEnumerator];
         id object;
 
@@ -372,7 +380,7 @@ static NSNumber *FALSE_VALUE;
         }
     }
 
-    if ( operator == MiscMergeOperatorNotIn )
+    if ( [self operator] == MiscMergeOperatorNotIn )
         returnValue = !returnValue;
 
     return returnValue ? TRUE_VALUE : FALSE_VALUE;
@@ -387,7 +395,8 @@ static NSNumber *FALSE_VALUE;
 {
     NSString *operatorDescription;
 
-    switch ( operator ) {
+    switch ( [self operator] )
+    {
         case MiscMergeOperatorIn:    return @"==";
         case MiscMergeOperatorNotIn: return @"!=";
         default:                     return @"";
@@ -402,14 +411,14 @@ static NSNumber *FALSE_VALUE;
 
 @implementation MiscMergeGroupExpression
 
-- (id)initWithExpression:(MiscMergeExpression *)lExpression
-           andExpression:(MiscMergeExpression *)rExpression
+- (id)initWithExpression:(MiscMergeExpression *)lExpression andExpression:(MiscMergeExpression *)rExpression
 {
     self = [super init];
-    if ( self ) {
-        expressions = [[NSMutableArray alloc] init];
-        [expressions addObject:lExpression];
-        [expressions addObject:rExpression];
+    if ( self != nil )
+    {
+        [self setExpressions:[[NSMutableArray alloc] init]];
+        [[self expressions] addObject:lExpression];
+        [[self expressions] addObject:rExpression];
     }
     return self;
 }
@@ -417,21 +426,16 @@ static NSNumber *FALSE_VALUE;
 - (id)initWithExpressions:(NSArray *)list
 {
     self = [super init];
-    if ( self ) {
-        expressions = [list retain];
+    if ( self != nil )
+    {
+        [self setExpressions:[[NSMutableArray alloc] init]];
     }
     return self;
 }
 
-- (void)dealloc
-{
-    [expressions release];
-    [super dealloc];
-}
-
 - (void)addExpression:(MiscMergeExpression *)expression
 {
-    [expressions addObject:expression];
+    [[self expressions] addObject:expression];
 }
 
 - (NSString *)nameDescription
@@ -441,29 +445,31 @@ static NSNumber *FALSE_VALUE;
 
 - (NSString *)description
 {
-    NSInteger index, count = [expressions count];
+    NSInteger index, count = [[self expressions] count];
     NSMutableString *string = [NSMutableString stringWithFormat:@"%@(", [self nameDescription]];
     
-    for ( index = 0; index < count; index++ ) {
+    for ( index = 0; index < count; index++ )
+    {
         if ( index > 0 )
+        {
             [string appendString:@","];
+        }
 
-        [string appendFormat:@"%d=%@", index, [expressions objectAtIndex:index]];
+        [string appendFormat:@"%ld=%@", (long)index, [[self expressions] objectAtIndex:index]];
     }
 
     [string appendString:@")"];
     return string;
 }
 
-+ (MiscMergeGroupExpression *)expression:(MiscMergeExpression *)lExpression
-                           andExpression:(MiscMergeExpression *)rExpression
++ (MiscMergeGroupExpression *)expression:(MiscMergeExpression *)lExpression andExpression:(MiscMergeExpression *)rExpression
 {
-    return [[[self alloc] initWithExpression:lExpression andExpression:rExpression] autorelease];
+    return [[self alloc] initWithExpression:lExpression andExpression:rExpression];
 }
 
 + (MiscMergeGroupExpression *)expressions:(NSArray *)list
 {
-    return [[[self alloc] initWithExpressions:list] autorelease];
+    return [[self alloc] initWithExpressions:list];
 }
 
 @end
@@ -472,7 +478,7 @@ static NSNumber *FALSE_VALUE;
 
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
 {
-    NSEnumerator *enumerator = [expressions objectEnumerator];
+    NSEnumerator *enumerator = [[self expressions] objectEnumerator];
     MiscMergeExpression *expression;
     BOOL returnValue = YES;
 
@@ -494,7 +500,7 @@ static NSNumber *FALSE_VALUE;
 
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
 {
-    NSEnumerator *enumerator = [expressions objectEnumerator];
+    NSEnumerator *enumerator = [[self expressions] objectEnumerator];
     MiscMergeExpression *expression;
     BOOL returnValue = NO;
 
@@ -516,13 +522,13 @@ static NSNumber *FALSE_VALUE;
 
 - (id)evaluateWithEngine:(MiscMergeEngine *)anEngine
 {
-    return [[expressions lastObject] evaluateWithEngine:anEngine];
+    return [[[self expressions] lastObject] evaluateWithEngine:anEngine];
 }
 
 - (NSArray *)evaluateAsListWithEngine:(MiscMergeEngine *)anEngine
 {
     NSMutableArray *array = [NSMutableArray array];
-    NSEnumerator *enumerator = [expressions objectEnumerator];
+    NSEnumerator *enumerator = [[self expressions] objectEnumerator];
     MiscMergeExpression *expression;
     
     while (( expression = (MiscMergeExpression *)[enumerator nextObject] )) {

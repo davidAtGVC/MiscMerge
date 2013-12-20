@@ -19,16 +19,16 @@
 
 @interface NSScanner (MiscMerge)
 
-- (BOOL)scanLetterIntoString:(NSString **)aString;
+- (BOOL)mm_scanLetterIntoString:(NSString **)aString;
 
-- (BOOL)scanString:(NSString *)aString;
+- (BOOL)mm_scanString:(NSString *)aString;
 
-- (NSRange)remainingRange;
-- (NSString *)remainingString;
+- (NSRange)mm_remainingRange;
+- (NSString *)mm_remainingString;
 
-- (void)skipPastSkipCharacters;
+- (void)mm_skipPastSkipCharacters;
 
-- (BOOL)scanCharacter:(unichar)targetCharacter;
-- (unichar)peekNextCharacter;
+- (BOOL)mm_scanCharacter:(unichar)targetCharacter;
+- (unichar)mm_peekNextCharacter;
 
 @end

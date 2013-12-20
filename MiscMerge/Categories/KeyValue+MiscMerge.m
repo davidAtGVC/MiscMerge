@@ -15,18 +15,16 @@
 //
 
 #import "KeyValue+MiscMerge.h"
+#import "NSCharacterSet+MiscMerge.h"
+
 #import <Foundation/NSObjCRuntime.h>
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSArray.h>
 #import <Foundation/NSString.h>
 #import <Foundation/NSCharacterSet.h>
+
 #import <stdlib.h> // for NULL os OSX
-#if GNU_RUNTIME
-#import <objc/objc-api.h>
-static Ivar_t class_getInstanceVariable(Class aClass, const char *name);
-#else
 #import <objc/objc-runtime.h>
-#endif
 
 @interface NSObject (WarningAvoidance)
 + (BOOL)accessInstanceVariablesDirectly;
@@ -34,28 +32,20 @@ static Ivar_t class_getInstanceVariable(Class aClass, const char *name);
 
 @implementation NSObject (MiscMergeHasKey)
 
-- (BOOL)hasMiscMergeKeyPath:(NSString *)keyPath
+- (BOOL)mm_hasMiscMergeKeyPath:(NSString *)keyPath
 {
-    static NSCharacterSet *dotSet;
-
     NSString *key = keyPath;
-    NSRange dotRange;
-
-    if ( dotSet == nil ) {
-        dotSet = [[NSCharacterSet characterSetWithRange:NSMakeRange((unsigned int)'.', 1)] retain];
-    }
-
-    dotRange = [keyPath rangeOfCharacterFromSet:dotSet];
+    NSRange dotRange = [keyPath rangeOfCharacterFromSet:[NSCharacterSet mm_KVCDelimiterCharacterSet]];
 
     if (dotRange.length > 0)
     {
         key = [keyPath substringToIndex:dotRange.location];
     }
 
-    return [self hasMiscMergeKey:key];
+    return [self mm_hasMiscMergeKey:key];
 }
 
-- (BOOL)hasMiscMergeKey:(NSString *)key
+- (BOOL)mm_hasMiscMergeKey:(NSString *)key
 {
     SEL keySelector;
 
@@ -72,7 +62,7 @@ static Ivar_t class_getInstanceVariable(Class aClass, const char *name);
 
 @implementation NSDictionary (MiscMergeHasKey)
 
-- (BOOL)hasMiscMergeKey:(NSString *)key
+- (BOOL)mm_hasMiscMergeKey:(NSString *)key
 {
     return ([self objectForKey:key] != nil)? YES : NO;
 }
@@ -81,40 +71,12 @@ static Ivar_t class_getInstanceVariable(Class aClass, const char *name);
 
 @implementation NSArray (MiscMergeHasKey)
 
-- (BOOL)hasMiscMergeKey:(NSString *)key
+- (BOOL)mm_hasMiscMergeKey:(NSString *)key
 {
     if ([key isEqualToString:@"count"]) return YES;
     if ([key hasPrefix:@"@"]) return YES;
     if ([self count] == 0) return YES; //Hmm
-    return [[self objectAtIndex:0] hasMiscMergeKey:key];
+    return [[self objectAtIndex:0] mm_hasMiscMergeKey:key];
 }
 
 @end
-
-#if GNU_RUNTIME
-
-static Ivar_t class_getInstanceVariable(Class aClass, const char *name)
-{
-    Class currClass;
-
-    if (name == NULL) return NULL;
-
-    for (currClass = aClass; currClass != Nil; currClass = currClass->super_class)
-    {
-        struct objc_ivar_list *ivars = aClass->ivars;
-        int pos;
-
-        for (pos = 0; pos < ivars->ivar_count; pos++)
-        {
-            Ivar_t currIvar = &(ivars->ivar_list[pos]);
-
-            if (strcmp(currIvar->ivar_name, name) == 0) {
-                return currIvar;
-            }
-        }
-    }
-
-    return NULL;
-}
-
-#endif

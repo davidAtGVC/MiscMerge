@@ -15,6 +15,7 @@
 //	
 
 #import "_MiscMergeDateCommand.h"
+#import "MiscMergeMacros.h"
 #import <Foundation/NSString.h>
 #import <Foundation/NSDate.h>
 
@@ -28,27 +29,21 @@
 
 @implementation _MiscMergeDateCommand
 
-- (void)dealloc
-{
-    [dateFormat release];
-    [super dealloc];
-}
-
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
     [self eatKeyWord:@"date" fromScanner:aScanner isOptional:NO];
-    dateFormat = [self getArgumentStringFromScanner:aScanner toEnd:YES];
-    if ([dateFormat length] == 0)
-        dateFormat = @"%B %d, %Y";
-
-    [dateFormat retain];
+    [self setDateFormat:[self getArgumentStringFromScanner:aScanner toEnd:YES]];
+    if (mm_IsEmpty([self dateFormat]) == YES)
+    {
+        [self setDateFormat:@"%B %d, %Y"];
+    }
     return YES;
 }
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
     NSCalendarDate *currentDate = (NSCalendarDate *)[NSCalendarDate date];
-    [aMerger appendToOutput:[currentDate descriptionWithCalendarFormat:dateFormat]];
+    [aMerger appendToOutput:[currentDate descriptionWithCalendarFormat:[self dateFormat]]];
     return MiscMergeCommandExitNormal;
 }
 

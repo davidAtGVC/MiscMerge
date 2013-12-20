@@ -19,6 +19,17 @@
 #import <Foundation/NSString.h>
 #import "MiscMergeEngine.h"
 #import "MiscMergeTemplate.h"
+#import "MiscMergeMacros.h"
+
+@interface MiscMergeDriver ()
+{
+    NSUInteger _mergeLoopIndex;          /*" Index to #{dataArray} when merge is in progress "*/
+}
+@property (assign, readwrite, getter=isMerging) BOOL merging;
+
+@end
+
+
 
 @implementation MiscMergeDriver
 /*"
@@ -67,51 +78,16 @@
  * and how to add custom commands to the framework.
 "*/
 
-- (void)dealloc
-{
-	[template release];
-	[engine release];
-	[dataArray release];
-	[super dealloc];
-}
-
-/*"
- * Returns the merge engine, an instance of MiscMergeEngine, that will be
- * used to perform a merge.  If no engine has been set up, then nil is
- * returned.
-"*/
-- (MiscMergeEngine *)engine
-{
-    return engine;
-}
-
-/*"
- * Returns the NSArray of data objects that will be used for the next
- * merge.
-"*/
-- (NSArray *)mergeData
-{
-    return dataArray;
-}
-
-/*"
- * Returns the MiscMergeTemplate that will be used for the next merge.
-"*/
-- (MiscMergeTemplate *)template
-{
-    return template;
-}
 
 /*"
  * Sets the MiscMergeTemplate that will be used for the next merge.  The
  * template will not be set if a merge is in progress.
 "*/
-- (void)setTemplate:(MiscMergeTemplate *)aTemplate
+- (void)setMergeTemplate:(MiscMergeTemplate *)aTemplate
 {
-    if (!merging && template != aTemplate)
+    if (([self isMerging] == NO) && ([self mergeTemplate] != aTemplate))
     {
-        [template release];
-        template = [aTemplate retain];
+        _mergeTemplate = aTemplate;
     }
 }
 
@@ -121,10 +97,9 @@
 "*/
 - (void)setMergeData:(NSArray *)aList
 {
-    if (!merging && dataArray != aList)
+    if (([self isMerging] == NO) && ([self mergeData] != aList))
     {
-        [dataArray release];
-        dataArray = [aList retain];
+        _mergeData = aList;
     }
 }
 
@@ -138,10 +113,9 @@
 "*/
 - (void)setEngine:(MiscMergeEngine *)anEngine
 {
-    if (!merging && engine != anEngine)
+    if (([self isMerging] == NO) && ([self engine] != anEngine))
     {
-        [engine release];
-        engine = [anEngine retain];
+        _engine = anEngine;
     }
 }
 
@@ -165,24 +139,25 @@
 - (NSArray *)doMerge:sender
 {
     BOOL createdEngine = NO;
-    NSMutableArray *output;
+    NSMutableArray *output = nil;
+    NSArray *dataArray = [self mergeData];
 
-    if (merging) return nil; // not re-entrant!!!
-    if ((template == nil && engine == nil) || dataArray == nil || [dataArray count] == 0) return nil;
+    if ([self isMerging] == YES) return nil; // not re-entrant!!!
+    if (([self mergeTemplate] == nil && [self engine] == nil) || mm_IsEmpty(dataArray)) return nil;
 
-    if (engine == nil)
+    if ([self engine] == nil)
     {
         createdEngine = YES;
-        engine = [[MiscMergeEngine alloc] initWithTemplate:template];
+        [self setEngine:[[MiscMergeEngine alloc] initWithTemplate:[self mergeTemplate]]];
     }
 
-    merging = YES;
+    [self setMerging:YES];
     output = [NSMutableArray arrayWithCapacity:[dataArray count]];
 
-    for (_mergeLoopIndex=0; _mergeLoopIndex<[dataArray count]; _mergeLoopIndex++)
+    for (_mergeLoopIndex=0; _mergeLoopIndex < [[self mergeData] count]; _mergeLoopIndex++)
     {
         id       inputObject = [dataArray objectAtIndex:_mergeLoopIndex];
-        NSString *outString  = [engine executeWithObject:inputObject sender:self];
+        NSString *outString  = [[self engine] executeWithObject:inputObject sender:self];
 
         while (_mergeLoopIndex > [output count] /*&& _mergeLoopIndex < [dataArray count] hmm */) {
             [output addObject:@""]; // placeholder for skipped
@@ -192,12 +167,11 @@
         else [output addObject:@""]; // placeholder if failed
     }
 
+    [self setMerging:YES];
     if (createdEngine) // don't keep it hanging around
     {
-        [engine release];
-        engine = nil;
+        [self setEngine:nil];
     }
-    merging = NO;
     return output;
 }
 
@@ -210,13 +184,15 @@
 {
     id nextObject = nil;
 
-    if ((!merging) || (_mergeLoopIndex >= [dataArray count])) return nil;
+    if (([self isMerging] == NO) || (_mergeLoopIndex >= [[self mergeData] count])) return nil;
 
     _mergeLoopIndex++;
 
-    if (_mergeLoopIndex < [dataArray count])
-        nextObject = [dataArray objectAtIndex:_mergeLoopIndex];
-    [engine setMainObject:nextObject];
+    if (_mergeLoopIndex < [[self mergeData] count])
+    {
+        nextObject = [[self mergeData] objectAtIndex:_mergeLoopIndex];
+    }
+    [[self engine] setMainObject:nextObject];
     return nextObject;
 }
 
@@ -226,9 +202,9 @@
 "*/
 - (id)currentObject
 {
-    if (!merging) return nil;
-    if (_mergeLoopIndex >= [dataArray count]) return nil;
-    return [dataArray objectAtIndex:_mergeLoopIndex];
+    if ([self isMerging] == NO) return nil;
+    if (_mergeLoopIndex >= [[self mergeData] count]) return nil;
+    return [[self mergeData] objectAtIndex:_mergeLoopIndex];
 }
 
 @end

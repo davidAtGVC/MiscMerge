@@ -19,9 +19,8 @@
 @class MiscMergeExpression;
 
 @interface _MiscMergeFieldCommand : MiscMergeCommand
-{
-    MiscMergeExpression *expression;
-}
+
+@property (strong, nonatomic) MiscMergeExpression *expression;
 
 @end
 

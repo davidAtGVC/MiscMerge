@@ -17,8 +17,7 @@
 #import "MiscMergeCommand.h"
 
 @interface _MiscMergeEndforeachCommand : MiscMergeCommand
-{
-    NSString *loopName;
-}
+
+@property (strong, nonatomic) NSString *loopName;
 
 @end

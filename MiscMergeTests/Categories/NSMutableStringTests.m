@@ -1,6 +1,6 @@
 //
-//  MiscMergeTests.m
-//  MiscMergeTests
+//  NSMutableStringTests.m
+//  MiscMerge
 //
 //  Created by David Aspinall on 12/20/2013.
 //  Copyright (c) 2013 Global Village Consulting. All rights reserved.
@@ -8,8 +8,13 @@
 
 #import <XCTest/XCTest.h>
 #import "MiscMergeTests.h"
+#import "NSString+MiscAdditions.h"
 
-@implementation MiscMergeTests
+@interface NSMutableStringTests : MiscMergeTests
+
+@end
+
+@implementation NSMutableStringTests
 
 - (void)setUp
 {
@@ -23,17 +28,21 @@
     [super tearDown];
 }
 
-- (NSString *)pathForResource:(NSString *)name extension:(NSString *)ext
-{
-    NSParameterAssert(name);
-    NSParameterAssert(ext);
 
-	NSString *file = [[NSBundle bundleForClass:[self class]] pathForResource:name ofType:ext];
-	
-	XCTAssertNotNil(file, @"Unable to locate %@.%@ file", name, ext);
-	XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:file], @"File does not exist %@", file);
-	
-	return file;
+- (void)test_replaceEveryOccurrenceOfString_withString
+{
+}
+
+- (void)test_replaceEveryOccurrenceOfString_withString_options
+{
+}
+
+- (void)test_replaceEveryOccurrenceOfCharactersFromSet_withString
+{
+}
+
+- (void)test_replaceEverySeriesOfCharactersFromSet_withString
+{
 }
 
 @end

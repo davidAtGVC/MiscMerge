@@ -20,16 +20,14 @@
 @class MiscMergeExpression;
 
 @interface _MiscMergeLoopCommand : MiscMergeCommand
-{
-    NSString *indexName;
-    NSString *loopName;
-    MiscMergeExpression *startKey;
-    MiscMergeExpression *stopKey;
-    MiscMergeExpression *stepKey;
-    MiscMergeCommandBlock *commandBlock;
-}
 
-- (NSString *)loopName;
+@property (strong, nonatomic) NSString *indexName;
+@property (strong, nonatomic) NSString *loopName;
+@property (strong, nonatomic) MiscMergeExpression *startKey;
+@property (strong, nonatomic) MiscMergeExpression *stopKey;
+@property (strong, nonatomic) MiscMergeExpression *stepKey;
+@property (strong, nonatomic) MiscMergeCommandBlock *commandBlock;
+
 - (void)handleEndLoopInTemplate:(MiscMergeTemplate *)template;
 
 @end

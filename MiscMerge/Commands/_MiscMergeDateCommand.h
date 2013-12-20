@@ -17,8 +17,7 @@
 #import "MiscMergeCommand.h"
 
 @interface _MiscMergeDateCommand : MiscMergeCommand
-{
-    NSString *dateFormat;
-}
+
+@property (strong, nonatomic) NSString *dateFormat;
 
 @end

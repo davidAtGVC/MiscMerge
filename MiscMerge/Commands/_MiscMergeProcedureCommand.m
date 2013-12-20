@@ -19,38 +19,21 @@
 #import "MiscMergeEngine.h"
 #import "MiscMergeTemplate.h"
 #import "MiscMergeCommandBlock.h"
-#import "NSNull.h"
 #import "NSScanner+MiscMerge.h"
 
-typedef enum _ArgTypes {
-    RequiredArg = 1,
-    OptionalArg = 2,
-    ArrayArg = 3
-} ArgTypes;
 
 @implementation _MiscMergeProcedureCommand
 
 - init
 {
-    [super init];
-    commandBlock = [[MiscMergeCommandBlock alloc] initWithOwner:self];
-    argumentArray = [[NSMutableArray alloc] init];
-    argumentTypes = [[NSMutableArray alloc] init];
+    self = [super init];
+    if ( self != nil )
+    {
+        [self setCommandBlock:[[MiscMergeCommandBlock alloc] initWithOwner:self]];
+        [self setArgumentArray:[NSMutableArray array]];
+        [self setArgumentTypes:[NSMutableArray array]];
+    }
     return self;
-}
-
-- (void)dealloc
-{
-    [commandBlock release];
-    [procedureName release];
-    [argumentArray release];
-    [argumentTypes release];
-    [super dealloc];
-}
-
-- (NSString *)procedureName
-{
-    return procedureName;
 }
 
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
@@ -59,44 +42,48 @@ typedef enum _ArgTypes {
     BOOL optArgProcessing = NO;
 
     [self eatKeyWord:@"procedure" fromScanner:aScanner isOptional:NO];
-    procedureName = [[self getArgumentStringFromScanner:aScanner toEnd:NO] retain];
+    [self setProcedureName:[self getArgumentStringFromScanner:aScanner toEnd:NO]];
 
-    while ((argName = [self getArgumentStringFromScanner:aScanner toEnd:NO])) {
-        if ( [argName hasSuffix:@"?"] ) {
+    while ((argName = [self getArgumentStringFromScanner:aScanner toEnd:NO]))
+    {
+        if ( [argName hasSuffix:@"?"] )
+        {
             optArgProcessing = YES;
             argName = [argName substringToIndex:([argName length] - 1)];
-            [argumentTypes addObject:[NSNumber numberWithInt:OptionalArg]];
+            [[self argumentTypes] addObject:[NSNumber numberWithInt:OptionalArg]];
         }
-        else if ( [argName hasSuffix:@"..."] ) {
+        else if ( [argName hasSuffix:@"..."] )
+        {
             argName = [argName substringToIndex:([argName length] - 3)];
-            [aScanner remainingString];
-            [argumentTypes addObject:[NSNumber numberWithInt:ArrayArg]];
+            [aScanner mm_remainingString];
+            [[self argumentTypes] addObject:[NSNumber numberWithInt:ArrayArg]];
         }
-        else if ( optArgProcessing ) {
-            [template reportParseError:@"%@:  Can only specify optional arguments after an initial optional argument:  \"%@\".", procedureName, argName];
+        else if ( optArgProcessing )
+        {
+            [template reportParseError:@"%@:  Can only specify optional arguments after an initial optional argument:  \"%@\".", [self procedureName], argName];
             return NO;
         }
         else {
-            [argumentTypes addObject:[NSNumber numberWithInt:RequiredArg]];
+            [[self argumentTypes] addObject:[NSNumber numberWithInt:RequiredArg]];
         }
 
-        [argumentArray addObject:argName];
+        [[self argumentArray] addObject:argName];
     }
 
-    [template pushCommandBlock:commandBlock];
+    [template pushCommandBlock:[self commandBlock]];
 
     return YES;
 }
 
 - (void)handleEndProcedureInTemplate:(MiscMergeTemplate *)template
 {
-    [template popCommandBlock:commandBlock];
+    [template popCommandBlock:[self commandBlock]];
 }
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
     /* Just want to register ourselves to the engine */
-    NSString *symbolName = [NSString stringWithFormat:@"_MiscMergeProcedure%@", procedureName];
+    NSString *symbolName = [NSString stringWithFormat:@"_MiscMergeProcedure%@", [self procedureName]];
     [[aMerger userInfo] setObject:self forKey:symbolName];
     return MiscMergeCommandExitNormal;
 }
@@ -104,7 +91,7 @@ typedef enum _ArgTypes {
 /* The *real* execute; messaged from the call command */
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger arguments:(NSArray *)passedArgArray
 {
-    NSInteger argumentIndex = 0, argumentCount = [argumentArray count];
+    NSInteger argumentIndex = 0, argumentCount = [[self argumentArray] count];
     NSInteger passedIndex = 0, passedCount = [passedArgArray count];
     NSInteger addToArgIndex = 0;
     NSMutableDictionary *procedureContext = [NSMutableDictionary dictionary];
@@ -116,12 +103,12 @@ typedef enum _ArgTypes {
         id argValue = [passedArgArray objectAtIndex:passedIndex];
 
         if ( argumentIndex >= argumentCount ) {
-            NSLog(@"%@: More arguments than declared.", procedureName);
+            NSLog(@"%@: More arguments than declared.", [self procedureName]);
             break;
         }
 
-        argName = [argumentArray objectAtIndex:argumentIndex];
-        argType = [[argumentTypes objectAtIndex:argumentIndex] intValue];
+        argName = [[self argumentArray] objectAtIndex:argumentIndex];
+        argType = [[[self argumentTypes] objectAtIndex:argumentIndex] intValue];
         
         switch ( argType ) {
             case RequiredArg:
@@ -154,8 +141,8 @@ typedef enum _ArgTypes {
         NSMutableString *string = [NSMutableString string];
         
         for ( ; argumentIndex < argumentCount; argumentIndex++ ) {
-            NSString *argName = [argumentArray objectAtIndex:argumentIndex];
-            int argType = [[argumentTypes objectAtIndex:argumentIndex] intValue];
+            NSString *argName = [[self argumentArray] objectAtIndex:argumentIndex];
+            int argType = [[[self argumentTypes] objectAtIndex:argumentIndex] intValue];
 
             if ( argType == OptionalArg ) {
                 [procedureContext setObject:@"" forKey:argName];
@@ -171,12 +158,12 @@ typedef enum _ArgTypes {
         }
 
         if ( [string length] > 0 )
-            NSLog(@"%@: Missing arguments for: %@", procedureName, string);
+            NSLog(@"%@: Missing arguments for: %@", [self procedureName], string);
     }
 
 
     [aMerger addContextObject:procedureContext andSetLocalSymbols:YES];
-    [aMerger executeCommandBlock:commandBlock];
+    [aMerger executeCommandBlock:[self commandBlock]];
     [aMerger removeContextObject:procedureContext];
 
     return MiscMergeCommandExitNormal;

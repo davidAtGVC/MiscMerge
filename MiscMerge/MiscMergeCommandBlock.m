@@ -18,6 +18,11 @@
 #import <Foundation/NSArray.h>
 #import "MiscMergeCommand.h"
 
+@interface MiscMergeCommandBlock ()
+@property (strong, nonatomic, readwrite) NSMutableArray *commandArray;
+@property (strong, nonatomic, readwrite) id owner;
+@end
+
 @implementation MiscMergeCommandBlock
 /*"
  * A MiscMergeCommandBlock is a wrapper around an NSArray of
@@ -37,10 +42,14 @@
 /*"
  * The designated initializer.  anOwner is not retained.
 "*/
-- initWithOwner:(id)anOwner
+- (id)initWithOwner:(id)anOwner
 {
-    commandArray = [[NSMutableArray alloc] init];
-    owner = anOwner;
+    self = [super init];
+    if (self != nil)
+    {
+        [self setCommandArray:[NSMutableArray array]];
+        [self setOwner:anOwner];
+    }
     return self;
 }
 
@@ -49,31 +58,10 @@
     return [self initWithOwner:nil];
 }
 
-- (void)dealloc
-{
-    [commandArray release];
-    [super dealloc];
-}
-
-/*" Returns the NSArray of MiscMergeCommands "*/
-- (NSArray *)commandArray
-{
-    return commandArray;
-}
-
-/*"
- * Returns the "owner" (usually a MiscMergeCommand subclass) set by
- * -#initWithOwner:.
-"*/
-- (id)owner
-{
-    return owner;
-}
-
 /*" Adds a MiscMergeCommand to the block. "*/
 - (void)addCommand:(MiscMergeCommand *)command
 {
-    [commandArray addObject:command];
+    [(NSMutableArray *)[self commandArray] addObject:command];
 }
 
 /*"
@@ -83,7 +71,7 @@
 "*/
 - (void)removeCommand:(MiscMergeCommand *)command
 {
-    [commandArray removeObjectIdenticalTo:command];
+    [(NSMutableArray *)[self commandArray] removeObjectIdenticalTo:command];
 }
 
 @end

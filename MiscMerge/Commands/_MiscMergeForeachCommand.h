@@ -19,16 +19,14 @@
 @class MiscMergeCommandBlock;
 
 @interface _MiscMergeForeachCommand : MiscMergeCommand
-{
-    NSString *itemName;
-    NSString *arrayField;
-    int arrayQuote;
-    NSString *loopName;
-    MiscMergeCommandBlock *commandBlock;
-    MiscMergeExpression *arrayExpression;
-}
 
-- (NSString *)loopName;
+@property (strong, nonatomic) NSString *itemName;
+@property (strong, nonatomic) NSString *arrayField;
+@property (assign, nonatomic) NSInteger arrayQuote;
+@property (strong, nonatomic) NSString *loopName;
+@property (strong, nonatomic) MiscMergeCommandBlock *commandBlock;
+@property (strong, nonatomic) MiscMergeExpression *arrayExpression;
+
 - (void)handleEndForeachInTemplate:(MiscMergeTemplate *)template;
 
 @end

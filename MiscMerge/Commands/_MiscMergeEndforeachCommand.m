@@ -15,29 +15,23 @@
 //
 
 #import "_MiscMergeEndforeachCommand.h"
-//#import <Foundation/NSUtilities.h>
 #import <Foundation/NSString.h>
 #import "_MiscMergeForeachCommand.h"
 #import "MiscMergeCommandBlock.h"
+#import "MiscMergeMacros.h"
 
 @implementation _MiscMergeEndforeachCommand
-
-- (void)dealloc
-{
-    [loopName release];
-    [super dealloc];
-}
 
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
     _MiscMergeForeachCommand *foreachCommand = [[template currentCommandBlock] owner];
 
     [self eatKeyWord:@"endforeach" fromScanner:aScanner isOptional:NO];
-    loopName = [[self getArgumentStringFromScanner:aScanner toEnd:NO] retain];
+    [self setLoopName:[self getArgumentStringFromScanner:aScanner toEnd:NO]];
 
-    if (![foreachCommand isKindOfCommandClass:@"Foreach"] ||
-        ([loopName length] > 0 && [[foreachCommand loopName] length] > 0 &&
-         ![loopName isEqualToString:[foreachCommand loopName]]))
+    if (([foreachCommand isKindOfCommandClass:@"Foreach"] == NO) ||
+        ((mm_IsEmpty([self loopName]) == NO) && (mm_IsEmpty([foreachCommand loopName]) == NO) &&
+         ([[self loopName] isEqualToString:[foreachCommand loopName]] == NO)))
     {
         [template reportParseError:@"Mismatched endforeach command"];
     }

@@ -18,7 +18,7 @@
 
 @implementation NSScanner (MiscMerge)
 
-- (BOOL)scanLetterIntoString:(NSString **)aString
+- (BOOL)mm_scanLetterIntoString:(NSString **)aString
 {
     NSRange letterRange;
 
@@ -39,7 +39,7 @@
     }
 }
 
-- (BOOL)scanString:(NSString *)aString
+- (BOOL)mm_scanString:(NSString *)aString
 {
     return [self scanString:aString intoString:NULL];
 }
@@ -49,7 +49,7 @@
  * scanLocation to the end.  This method does not skip past the skip
  * characters first.
 "*/
-- (NSRange)remainingRange
+- (NSRange)mm_remainingRange
 {
     NSUInteger location = [self scanLocation];
     return NSMakeRange(location, [[self string] length] - location);
@@ -63,15 +63,14 @@
  * skip characters before doing other work the way other NSScanner methods
  * do.
 "*/
-- (void)skipPastSkipCharacters
+- (void)mm_skipPastSkipCharacters
 {
     NSCharacterSet *nonskipSet = [[self charactersToBeSkipped] invertedSet];
     NSRange skipRange;
 
     if (nonskipSet == nil) return;
 
-    skipRange = [[self string] rangeOfCharacterFromSet:nonskipSet options:0
-                                                 range:[self remainingRange]];
+    skipRange = [[self string] rangeOfCharacterFromSet:nonskipSet options:0 range:[self mm_remainingRange]];
     if (skipRange.length > 0)
     {
         [self setScanLocation:skipRange.location];
@@ -82,14 +81,12 @@
     }
 }
 
-- (BOOL)scanCharacter:(unichar)targetCharacter
+- (BOOL)mm_scanCharacter:(unichar)targetCharacter
 {
+    [self mm_skipPastSkipCharacters];
+
     NSUInteger scanLocation = [self scanLocation];
     NSString *myString = [self string];
-
-    [self skipPastSkipCharacters];
-    scanLocation = [self scanLocation];
-    myString     = [self string];
 
     if ([myString length] == scanLocation) return NO;
 
@@ -102,12 +99,12 @@
     return NO;
 }
 
-- (unichar)peekNextCharacter
+- (unichar)mm_peekNextCharacter
 {
     NSUInteger scanLocation;
     NSString *myString;
 
-    [self skipPastSkipCharacters];
+    [self mm_skipPastSkipCharacters];
     scanLocation = [self scanLocation];
     myString     = [self string];
 
@@ -117,7 +114,7 @@
 }
 
 // NeXT has a method called this, at least in 3.3...
-- (NSString *)remainingString
+- (NSString *)mm_remainingString
 {
     return [[self string] substringFromIndex:[self scanLocation]];
 }

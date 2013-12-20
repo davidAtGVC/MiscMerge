@@ -23,82 +23,55 @@ enum
 };
 
 
-@interface NSCharacterSet (MiscAdditions)
-
-+ (NSCharacterSet *)allWhitespaceCharacterSet;
-
-@end
-
 @interface NSString (MiscAdditions)
 
 /*" Trimming whitespace "*/
-- (id)stringByTrimmingLeadWhitespace;
-- (id)stringByTrimmingTailWhitespace;
-- (id)stringByTrimmingWhitespace;
-- (id)stringBySquashingWhitespace;
+- (id)mm_stringByTrimmingLeadWhitespace;
+- (id)mm_stringByTrimmingTailWhitespace;
+- (id)mm_stringByTrimmingWhitespace;
+- (id)mm_stringBySquashingWhitespace;
 
 /*" "Letter" manipulation "*/
-- (NSString *)letterAtIndex:(unsigned)anIndex;
-- (NSString *)firstLetter;
-- (NSUInteger)letterCount;
+- (NSString *)mm_letterAtIndex:(NSUInteger)anIndex;
+- (NSString *)mm_firstLetter;
+- (NSUInteger)mm_letterCount;
 
 /*" Getting "words" "*/
-- (NSArray *)wordArray;
-- (unsigned)wordCount;
-- (NSString *)wordNum:(unsigned)n;
-- (NSEnumerator *)wordEnumerator;
-- (NSString *)firstWord;
+- (NSArray *)mm_wordArray;
+- (NSUInteger)mm_wordCount;
+- (NSString *)mm_wordNum:(NSUInteger)n;
+- (NSEnumerator *)mm_wordEnumerator;
+- (NSString *)mm_firstWord;
 
-/*" Bulk replacing "*/
-- stringByReplacingEveryOccurrenceOfString:(NSString *)aString
-                                withString:(NSString *)replaceString;
-- stringByReplacingEveryOccurrenceOfString:(NSString *)searchString
-                                withString:(NSString *)replaceString
-                                   options:(unsigned)mask;
-- stringByReplacingEveryOccurrenceOfCharactersFromSet:(NSCharacterSet *)aSet
-                                           withString:(NSString *)replaceString;
-- stringByReplacingEverySeriesOfCharactersFromSet:(NSCharacterSet *)aSet
-                                       withString:(NSString *)replaceString;
+- (NSUInteger)mm_numOfString:(NSString *)aString;
+- (NSUInteger)mm_numOfString:(NSString *)aString options:(NSUInteger)mask;
+- (NSUInteger)mm_numOfString:(NSString *)aString range:(NSRange)range;
+- (NSUInteger)mm_numOfString:(NSString *)aString options:(NSUInteger)mask range:(NSRange)range;
+- (NSUInteger)mm_numOfCharactersFromSet:(NSCharacterSet *)aSet;
+- (NSUInteger)mm_numOfCharactersFromSet:(NSCharacterSet *)aSet range:(NSRange)range;
 
-- (unsigned)numOfString:(NSString *)aString;
-- (unsigned)numOfString:(NSString *)aString options:(unsigned)mask;
-- (unsigned)numOfString:(NSString *)aString range:(NSRange)range;
-- (unsigned)numOfString:(NSString *)aString options:(unsigned)mask range:(NSRange)range;
-- (unsigned)numOfCharactersFromSet:(NSCharacterSet *)aSet;
-- (unsigned)numOfCharactersFromSet:(NSCharacterSet *)aSet range:(NSRange)range;
-
-- (NSRange)rangeOfString:(NSString *)aString occurrenceNum:(int)n;
-- (NSRange)rangeOfString:(NSString *)aString options:(unsigned)mask occurrenceNum:(int)n;
-- (NSRange)rangeOfString:(NSString *)aString occurrenceNum:(int)n range:(NSRange)range;
-- (NSRange)rangeOfString:(NSString *)aString options:(unsigned)mask occurrenceNum:(int)n range:(NSRange)range;
+- (NSRange)mm_rangeOfString:(NSString *)aString occurrenceNum:(NSUInteger)n;
+- (NSRange)mm_rangeOfString:(NSString *)aString options:(NSUInteger)mask occurrenceNum:(NSUInteger)n;
+- (NSRange)mm_rangeOfString:(NSString *)aString occurrenceNum:(NSUInteger)n range:(NSRange)range;
+- (NSRange)mm_rangeOfString:(NSString *)aString options:(NSUInteger)mask occurrenceNum:(NSUInteger)n range:(NSRange)range;
 
 /*" Dividing strings into pieces "*/
-- (NSArray *)componentsSeparatedByCharactersFromSet:(NSCharacterSet *)aSet;
-- (NSArray *)componentsSeparatedBySeriesOfCharactersFromSet:(NSCharacterSet *)aSet;
-- (NSString *)substringToString:(NSString *)aString;
-- (NSString *)substringFromEndOfString:(NSString *)aString;
+- (NSArray *)mm_componentsSeparatedByCharactersFromSet:(NSCharacterSet *)aSet;
+- (NSArray *)mm_componentsSeparatedBySeriesOfCharactersFromSet:(NSCharacterSet *)aSet;
+- (NSString *)mm_substringToString:(NSString *)aString;
+- (NSString *)mm_substringFromEndOfString:(NSString *)aString;
 
 /*" Adding the options mask (mainly for NSCaseInsensitiveSearch) "*/
-- (BOOL)containsString:(NSString *)aString;
-- (BOOL)containsString:(NSString *)aString options:(unsigned)mask;
-- (BOOL)hasPrefix:(NSString *)aString options:(unsigned)mask;
-- (BOOL)hasSuffix:(NSString *)aString options:(unsigned)mask;
+- (BOOL)mm_containsString:(NSString *)aString;
+- (BOOL)mm_containsString:(NSString *)aString options:(NSUInteger)mask;
+- (BOOL)mm_hasPrefix:(NSString *)aString options:(NSUInteger)mask;
+- (BOOL)mm_hasSuffix:(NSString *)aString options:(NSUInteger)mask;
 
-- (BOOL)isBlank;
+- (BOOL)mm_isBlank;
 
 @end
 
 
 @interface NSMutableString (MiscAdditions)
-
-/*" Bulk replacing "*/
-- (void)replaceEveryOccurrenceOfString:(NSString *)string withString:(NSString *)replaceString;
-- (void)replaceEveryOccurrenceOfString:(NSString *)string
-                            withString:(NSString *)replaceString
-                               options:(unsigned)mask;
-- (void)replaceEveryOccurrenceOfCharactersFromSet:(NSCharacterSet *)aSet
-                                       withString:(NSString *)replaceString;
-- (void)replaceEverySeriesOfCharactersFromSet:(NSCharacterSet *)aSet
-                                   withString:(NSString *)replaceString;
 
 @end

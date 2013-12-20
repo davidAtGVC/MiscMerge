@@ -27,7 +27,7 @@
     MiscMergeCommandBlock *parentIfBlock = [template currentCommandBlock];
     _MiscMergeIfCommand *parentIfCommand = [parentIfBlock owner];
 
-    if (![parentIfCommand isKindOfCommandClass:@"If"])
+    if ([parentIfCommand isKindOfCommandClass:@"If"] == NO)
     {
         [template reportParseError:@"Mismatched elseif command"];
     }

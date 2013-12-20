@@ -22,38 +22,32 @@
 #import <Foundation/NSString.h>
 #import "MiscMergeEngine.h"
 #import "_MiscMergeProcedureCommand.h"
-#import "NSNull.h"
 
 @implementation _MiscMergeCallCommand
 
 - init
 {
-    [super init];
-    argumentArray = [[NSMutableArray alloc] init];
-    quotedArray = [[NSMutableArray alloc] init];
+    self = [super init];
+    if ( self != nil )
+    {
+        [self setArgumentArray:[NSMutableArray array]];
+        [self setQuotedArray:[NSMutableArray array]];
+    }
     return self;
-}
-
-- (void)dealloc
-{
-    [procedureName release];
-    [argumentArray release];
-    [quotedArray release];
-    [super dealloc];
 }
 
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
     NSString *argName;
-    int quotes;
+    NSInteger quotes;
 
     [self eatKeyWord:@"call" fromScanner:aScanner isOptional:NO];
-    procedureName = [[self getArgumentStringFromScanner:aScanner toEnd:NO] retain];
+    [self setProcedureName:[self getArgumentStringFromScanner:aScanner toEnd:NO]];
 
     while ((argName = [self getArgumentStringFromScanner:aScanner toEnd:NO quotes:&quotes]))
     {
-        [argumentArray addObject:argName];
-        [quotedArray addObject:[NSNumber numberWithInt:quotes]];
+        [[self argumentArray] addObject:argName];
+        [[self quotedArray] addObject:[NSNumber numberWithInteger:quotes]];
     }
 
     return YES;
@@ -61,29 +55,33 @@
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
-    NSString *symbolName = [NSString stringWithFormat:@"_MiscMergeProcedure%@", procedureName];
+    NSString *symbolName = [NSString stringWithFormat:@"_MiscMergeProcedure%@", [self procedureName]];
     _MiscMergeProcedureCommand *procCommand = [[aMerger userInfo] objectForKey:symbolName];
-    NSInteger i, count = [argumentArray count];
+    NSInteger count = [[self argumentArray] count];
     NSMutableArray *realArgArray = [NSMutableArray arrayWithCapacity:count];
 
     if (procCommand == nil)
     {
-        if ( !alreadyWarned ) {
-            NSLog(@"%@: Error -- procedure %@ not found.", [self class], procedureName);
-            alreadyWarned = YES;
+        if ([self alreadyWarned] == NO )
+        {
+            NSLog(@"%@: Error -- procedure %@ not found.", [self class], [self procedureName]);
+            [self setAlreadyWarned:YES];
         }
         return MiscMergeCommandExitNormal;
     }
 
-    for (i=0; i<count; i++)
+    for (NSInteger i = 0; i < count; i++)
     {
-        NSString *argument = [argumentArray objectAtIndex:i];
+        NSString *argument = [[self argumentArray] objectAtIndex:i];
         id value = nil;
-        int quote = [[quotedArray objectAtIndex:i] intValue];
+        NSInteger quote = [[[self quotedArray] objectAtIndex:i] integerValue];
 
         if ( quote == 1 )
+        {
             value = argument;
-        else {
+        }
+        else
+        {
             value = [aMerger valueForField:argument quoted:quote];
             if (value == nil) value = [NSNull null];
         }

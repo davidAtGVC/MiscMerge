@@ -19,74 +19,75 @@
 @class NSMutableString, NSMutableArray, NSMutableDictionary;
 @class MiscMergeTemplate, MiscMergeCommand, MiscMergeCommandBlock;
 
-typedef enum _MiscMergeCommandExitType {
+typedef NS_ENUM(NSUInteger, MiscMergeCommandExitType)
+{
     MiscMergeCommandExitNormal,
     MiscMergeCommandExitBreak,
     MiscMergeCommandExitContinue
-} MiscMergeCommandExitType;
+};
 
-typedef enum _MiscMergeFailedLookupResultType {
+typedef NS_ENUM (NSUInteger, MiscMergeFailedLookupResultType)
+{
     MiscMergeFailedLookupResultKey,
     MiscMergeFailedLookupResultKeyWithDelims,
     MiscMergeFailedLookupResultNil,
     MiscMergeFailedLookupResultKeyIfNumeric
-} MiscMergeFailedLookupResultType;
+};
 
-typedef enum _MiscMergeNilLookupResultType {
+typedef NS_ENUM(NSUInteger, MiscMergeNilLookupResultType)
+{
     MiscMergeNilLookupResultNil,
     MiscMergeNilLookupResultKeyIfQuoted,
     MiscMergeNilLookupResultKey,
     MiscMergeNilLookupResultKeyWithDelims
-} MiscMergeNilLookupResultType;
+};
 
 @interface MiscMergeEngine : NSObject
-{
-    NSMutableDictionary *userInfo;
-    NSMutableDictionary *engineSymbols;
-    NSMutableDictionary *mergeSymbols;
-    NSMutableDictionary *localSymbols;
-    MiscMergeTemplate   *template;
-    id              	currentObject;
-    NSMutableArray  	*contextStack;
-    NSMutableArray  	*commandStack;
-    NSMutableString 	*outputString;
-    MiscMergeEngine     *parentMerge;
-    id                  driver;
-    BOOL		aborted;
-    BOOL   		keepDelimiters;
-    BOOL		useRecursiveLookups;
-    int			recursiveLookupLimit;
-    MiscMergeFailedLookupResultType failedLookupResult;
-    MiscMergeNilLookupResultType nilLookupResult;
-}
 
 /*" Initializing "*/
 - init;
 - initWithTemplate:(MiscMergeTemplate *)aTemplate;
 
 /*" Setting/getting attributes "*/
-- (NSMutableDictionary *)userInfo;
-- (id)mainObject;
-- (MiscMergeTemplate *)template;
-- (MiscMergeEngine *)parentMerge;
-- (void)setMainObject:(id)anObject;
-- (void)setTemplate:(MiscMergeTemplate *)aTemplate;
-- (void)setParentMerge:(MiscMergeEngine *)anEngine;
+@property (strong, nonatomic, readonly) NSMutableDictionary *userInfo;
 
-- (BOOL)useRecursiveLookups;
-- (void)setUseRecursiveLookups:(BOOL)shouldRecurse;
-- (int)recursiveLookupLimit;
-- (void)setRecursiveLookupLimit:(int)recurseLimit;
-- (void)setUseRecursiveLookups:(BOOL)shouldRecurse limit:(int)recurseLimit;
+/*" Accessing the template "*/
+@property (strong, nonatomic) MiscMergeTemplate *mergeTemplate;
 
-- (BOOL)keepsDelimiters;
-- (void)setKeepsDelimiters:(BOOL)shouldKeep;
+/*"
+ * the "parent" merge for this merge engine.  If a symbol cannot be
+ * found in the receiving instance's symbol table during lookup, the parent
+ * will be consulted to see if it is defined there.
+ "*/
+@property (strong, nonatomic) MiscMergeEngine *parentMerge;
 
-- (MiscMergeFailedLookupResultType)failedLookupResult;
-- (void)setFailedLookupResult:(MiscMergeFailedLookupResultType)type;
+/*" Returns the main data object to be used in the next merge. "*/
+@property (strong, nonatomic) id mainObject;
 
-- (MiscMergeNilLookupResultType)nilLookupResult;
-- (void)setNilLookupResult:(MiscMergeNilLookupResultType)type;
+/*"
+ * Returns YES if recursive lookups are being used.  During symbol
+ * resolution, if a resolved value is an NSString object and recursive
+ * lookups are turned on, then the value is used as a key itself and the
+ * symbol lookup is repeated.  This process repeats until a value is not
+ * found or it's not an NSString object, at which point the last valid
+ * value will be returned.  This allows for multiple levels of indirection.
+ * Be careful when using this feature, as it can lead to unexpected
+ * problems.  For example, if the main object is not a dictionary,
+ * returning a string that has the same name as a method on that object
+ * (such as "description" or "zone") can lead to interesting (unintended)
+ * results or even exceptions being raised.  Also, if an indirect value is
+ * the same as a previously-resolved key, then the merge engine will go
+ * into an infinite loop. By default, recursive lookups are turned off.
+ "*/
+@property (assign, nonatomic) BOOL useRecursiveLookups;
+@property (assign, nonatomic) NSInteger recursiveLookupLimit;
+- (void)setUseRecursiveLookups:(BOOL)shouldRecurse limit:(NSInteger)recurseLimit;
+
+@property (assign, nonatomic) BOOL keepsDelimiters;
+
+@property (assign, nonatomic) MiscMergeFailedLookupResultType failedLookupResult;
+@property (assign, nonatomic) MiscMergeNilLookupResultType nilLookupResult;
+
 
 /*" Manipulating context variables "*/
 + (NSMutableDictionary *)globalSymbolsDictionary;
@@ -109,7 +110,13 @@ typedef enum _MiscMergeNilLookupResultType {
 - (void)removeLocalValueForKey:(NSString *)aKey;
 - (id)localValueForKey:(NSString *)aKey;
 
-/*" Executing the merge "*/
+/*"
+ * Performs a merge using the current data object and template.  If
+ * successful, then an NSString containing the results of the merge is
+ * returned.  If unsuccessful, nil is returned.  The argument %{sender}
+ * should be the initiating driver.  If not, some commands, such as "next"
+ * will not work properly.
+ "*/
 - (NSString *)execute:sender;
 - (NSString *)executeWithObject:(id)anObject sender:sender;
 
@@ -122,10 +129,38 @@ typedef enum _MiscMergeNilLookupResultType {
 - (void)addContextObject:(id)anObject andSetLocalSymbols:(BOOL)flag;
 - (void)addContextObject:(id)anObject;
 - (void)removeContextObject:(id)anObject;
+
+/*"
+ * Attempts to resolve a field name, by going down the context stack until
+ * an object containing that key is found, at which point the
+ * -#valueForKeyPath: is returned, thus treating the fieldName as a key
+ * path.  If recursive lookups are turned on, then a resolved value that is
+ * an NSString objects is treated as a field name, and the lookup process
+ * is started again.  This will be repeated until a value is not found or
+ * the resolved value is not an NSString object, at which point the last
+ * valid result will be returned. If the field name is not found at all,
+ * then the field string itself is returned (unless keepDelimiters is set
+ * to YES, in which case the field string surrounded by the original field
+ * delimiters will be returned).
+ "*/
 - (id)valueForField:(NSString *)fieldName;
-- (id)valueForField:(NSString *)fieldName quoted:(int)quoted;
+- (id)valueForField:(NSString *)fieldName quoted:(NSInteger)quoted;
+
 - (void)appendToOutput:(NSString *)aString;
+
+/*"
+ * Aborts the current merge.  This means that the merge output will be nil,
+ * as well.
+ "*/
 - (void)abortMerge;
+
+/*"
+ * Attempts to advance to the next merge object while still working with
+ * the current output string.  This might be used to allow two merges to
+ * appear on the same "page" or document, for example. For it to work
+ * properly, the driver that started the merge must respond to the
+ * -#{advanceRecord} method.
+ "*/
 - (void)advanceRecord;
 
 @end

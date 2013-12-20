@@ -17,10 +17,9 @@
 #import "MiscMergeCommand.h"
 
 @interface _MiscMergeWhileCommand : MiscMergeCommand
-{
-    MiscMergeExpression   *expression;
-    MiscMergeCommandBlock *commandBlock;
-}
+
+@property (strong, nonatomic) MiscMergeExpression *expression;
+@property (strong, nonatomic) MiscMergeCommandBlock *commandBlock;
 
 - (void)handleEndWhileInTemplate:(MiscMergeTemplate *)template;
 

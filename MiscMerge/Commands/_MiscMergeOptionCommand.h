@@ -16,10 +16,24 @@
 
 #import "MiscMergeCommand.h"
 
-@interface _MiscMergeOptionCommand : MiscMergeCommand
+typedef NS_ENUM(NSInteger, OptionType)
 {
-    int optionType;
-    NSString *value1;
-}
+    RecursiveLookups = 1,
+    
+    FailedLookupResultKey,
+    FailedLookupResultKeyWithDelims,
+    FailedLookupResultNil,
+    FailedLookupResultKeyIfNumeric,
+    
+    NilLookupResultNil,
+    NilLookupResultKeyIfQuoted,
+    NilLookupResultKey,
+    NilLookupResultKeyWithDelims
+};
+
+@interface _MiscMergeOptionCommand : MiscMergeCommand
+
+@property (assign, nonatomic) OptionType optionType;
+@property (strong, nonatomic) NSString *value1;
 
 @end

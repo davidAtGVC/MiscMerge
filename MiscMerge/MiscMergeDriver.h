@@ -17,31 +17,25 @@
 #import <Foundation/NSObject.h>
 
 @class NSArray;
-@class MiscMergeTemplate, MiscMergeEngine;
+@class MiscMergeTemplate;
+@class MiscMergeEngine;
 
 @interface MiscMergeDriver : NSObject
-{
-    MiscMergeTemplate *template;  /*" MiscMergeTemplate for merging "*/
-    MiscMergeEngine   *engine;    /*" The merge engine to be used for merges "*/
-    NSArray           *dataArray; /*" List of MiscDictionaries used for merges "*/
-    BOOL              merging;    /*" YES if merging, NO if not "*/
 
-    int _mergeLoopIndex;          /*" Index to #{dataArray} when merge is in progress "*/
-}
+/*" YES if merging, NO if not "*/
+@property (readonly, getter=isMerging) BOOL merging;
 
 /*" Accessing the template "*/
-- (MiscMergeTemplate *)template;
-- (void)setTemplate:(MiscMergeTemplate *)aTemplate;
+@property (strong, nonatomic) MiscMergeTemplate *mergeTemplate;
 
 /*" Accessing the data "*/
-- (NSArray *)mergeData;
-- (void)setMergeData:(NSArray *)aList;
+@property (strong, nonatomic) NSArray *mergeData;
+
+/*" Accessing the engine "*/
+@property (strong, nonatomic) MiscMergeEngine *engine;
 
 /*" Performing a merge "*/
 - (NSArray *)doMerge:sender;
 
-/*" Accessing the engine "*/
-- (MiscMergeEngine *)engine;
-- (void)setEngine:(MiscMergeEngine *)anEngine;
 
 @end

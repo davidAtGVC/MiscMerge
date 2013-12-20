@@ -19,27 +19,9 @@
 #import "MiscMergeTemplate.h"
 #import "MiscMergeFunctions.h"
 
-typedef enum _OptionType {
-    RecursiveLookups = 1,
-
-    FailedLookupResultKey,
-    FailedLookupResultKeyWithDelims,
-    FailedLookupResultNil,
-    FailedLookupResultKeyIfNumeric,
-
-    NilLookupResultNil,
-    NilLookupResultKeyIfQuoted,
-    NilLookupResultKey,
-    NilLookupResultKeyWithDelims
-} OptionType;
 
 @implementation _MiscMergeOptionCommand
 
-- (void)dealloc
-{
-    [value1 release];
-    [super dealloc];
-}
 
 /*" This method will parse a option command in a template. Options can affect the template
 processing or the runtime.
@@ -56,27 +38,31 @@ option nilLookupResult Nil* | KeyIfQuoted | Key | KeyWithDelims
 {
     NSString *option;
 
-    if ( ![self eatKeyWord:@"option" fromScanner:aScanner isOptional:NO] )
+    if ( [self eatKeyWord:@"option" fromScanner:aScanner isOptional:NO] == NO)
         return NO;
 
     option = [self getArgumentStringFromScanner:aScanner toEnd:NO];
 
-    if ( NSOrderedSame == [option caseInsensitiveCompare:@"recursiveLookups"] ) {
-        optionType = RecursiveLookups;
-        value1 = [[self getArgumentStringFromScanner:aScanner toEnd:NO] retain];
+    if ( NSOrderedSame == [option caseInsensitiveCompare:@"recursiveLookups"] )
+    {
+        [self setOptionType:RecursiveLookups];
+        [self setValue1:[self getArgumentStringFromScanner:aScanner toEnd:NO]];
     }
-
-    else if ( NSOrderedSame == [option caseInsensitiveCompare:@"delimiters"] ) {
+    else if ( NSOrderedSame == [option caseInsensitiveCompare:@"delimiters"] )
+    {
         NSString *argument1 = [self getArgumentStringFromScanner:aScanner toEnd:NO];
         NSString *argument2 = [self getArgumentStringFromScanner:aScanner toEnd:NO];
 
         if ( ([argument1 length] == 0) && ([argument2 length] == 0) )
             [template reportParseError:@"%@: option delimiters command needs two arguments", [self class]];
         else
-            [template setStartDelimiter:argument1 endDelimiter:argument2];
+        {
+            [template setStartDelimiter:argument1];
+            [template setEndDelimiter:argument2];
+        }
     }
-
-    else if ( NSOrderedSame == [option caseInsensitiveCompare:@"betweenWhitespace"] ) {
+    else if ( NSOrderedSame == [option caseInsensitiveCompare:@"betweenWhitespace"] )
+    {
         NSString *argument = [self getArgumentStringFromScanner:aScanner toEnd:NO];
 
         if ( NSOrderedSame == [argument caseInsensitiveCompare:@"keep"] )
@@ -88,34 +74,34 @@ option nilLookupResult Nil* | KeyIfQuoted | Key | KeyWithDelims
         else if ( NSOrderedSame == [argument caseInsensitiveCompare:@"ignoreCommandSpaces"] )
             [template setTrimWhitespaceBehavior:MiscMergeIgnoreCommandSpaces];
     }
-
-    else if ( NSOrderedSame == [option caseInsensitiveCompare:@"failedLookupResult"] ) {
+    else if ( NSOrderedSame == [option caseInsensitiveCompare:@"failedLookupResult"] )
+    {
         NSString *argument = [self getArgumentStringFromScanner:aScanner toEnd:NO];
 
         if ( NSOrderedSame == [argument caseInsensitiveCompare:@"key"] )
-            optionType = FailedLookupResultKey;
+            [self setOptionType:FailedLookupResultKey];
         else if ( NSOrderedSame == [argument caseInsensitiveCompare:@"keyWithDelims"] )
-            optionType = FailedLookupResultKeyWithDelims;
+            [self setOptionType:FailedLookupResultKeyWithDelims];
         else if ( NSOrderedSame == [argument caseInsensitiveCompare:@"nil"] )
-            optionType = FailedLookupResultNil;
+            [self setOptionType:FailedLookupResultNil];
         else if ( NSOrderedSame == [argument caseInsensitiveCompare:@"keyIfNumeric"] )
-            optionType = FailedLookupResultKeyIfNumeric;
+            [self setOptionType:FailedLookupResultKeyIfNumeric];
     }
-
-    else if ( NSOrderedSame == [option caseInsensitiveCompare:@"nilLookupResult"] ) {
+    else if ( NSOrderedSame == [option caseInsensitiveCompare:@"nilLookupResult"] )
+    {
         NSString *argument = [self getArgumentStringFromScanner:aScanner toEnd:NO];
 
         if ( NSOrderedSame == [argument caseInsensitiveCompare:@"nil"] )
-            optionType = NilLookupResultNil;
+            [self setOptionType:NilLookupResultNil];
         else if ( NSOrderedSame == [argument caseInsensitiveCompare:@"keyIfQuoted"] )
-            optionType = NilLookupResultKeyIfQuoted;
+            [self setOptionType:NilLookupResultKeyIfQuoted];
         else if ( NSOrderedSame == [argument caseInsensitiveCompare:@"key"] )
-            optionType = NilLookupResultKey;
+            [self setOptionType:NilLookupResultKey];
         else if ( NSOrderedSame == [argument caseInsensitiveCompare:@"keyWithDelims"] )
-            optionType = NilLookupResultKeyWithDelims;
+            [self setOptionType:NilLookupResultKeyWithDelims];
     }
-
-    else {
+    else
+    {
         [self error_argument:option];
     }
 
@@ -124,11 +110,12 @@ option nilLookupResult Nil* | KeyIfQuoted | Key | KeyWithDelims
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
-    switch (optionType) {
+    switch ([self optionType])
+    {
         case RecursiveLookups:
-            if ( [value1 intValue] > 0 )
-                [aMerger setUseRecursiveLookups:YES limit:[value1 intValue]];
-            else if ( MMIsBooleanTrueString(value1) )
+            if ( [[self value1] integerValue] > 0 )
+                [aMerger setUseRecursiveLookups:YES limit:[[self value1] integerValue]];
+            else if ( MMIsBooleanTrueString([self value1]) )
                 [aMerger setUseRecursiveLookups:YES];
             else
                 [aMerger setUseRecursiveLookups:NO];
@@ -137,12 +124,15 @@ option nilLookupResult Nil* | KeyIfQuoted | Key | KeyWithDelims
         case FailedLookupResultKey:
             [aMerger setFailedLookupResult:MiscMergeFailedLookupResultKey];
             break;
+            
         case FailedLookupResultKeyWithDelims:
             [aMerger setFailedLookupResult:MiscMergeFailedLookupResultKeyWithDelims];
             break;
+
         case FailedLookupResultNil:
             [aMerger setFailedLookupResult:MiscMergeFailedLookupResultNil];
            break;
+
         case FailedLookupResultKeyIfNumeric:
             [aMerger setFailedLookupResult:MiscMergeFailedLookupResultKeyIfNumeric];
             break;
@@ -150,12 +140,15 @@ option nilLookupResult Nil* | KeyIfQuoted | Key | KeyWithDelims
         case NilLookupResultNil:
             [aMerger setNilLookupResult:MiscMergeNilLookupResultNil];
             break;
+
         case NilLookupResultKeyIfQuoted:
             [aMerger setNilLookupResult:MiscMergeNilLookupResultKeyIfQuoted];
             break;
+
         case NilLookupResultKey:
             [aMerger setNilLookupResult:MiscMergeNilLookupResultKey];
             break;
+
         case NilLookupResultKeyWithDelims:
             [aMerger setNilLookupResult:MiscMergeNilLookupResultKeyWithDelims];
             break;

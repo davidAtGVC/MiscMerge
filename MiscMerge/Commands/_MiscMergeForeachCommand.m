@@ -27,62 +27,47 @@
 
 - init
 {
-    [super init];
-    commandBlock = [[MiscMergeCommandBlock alloc] initWithOwner:self];
+    self = [super init];
+    if ( self != nil )
+    {
+        [self setCommandBlock:[[MiscMergeCommandBlock alloc] initWithOwner:self]];
+    }
     return self;
-}
-
-- (void)dealloc
-{
-    [itemName release];
-    [arrayField release];
-    [arrayExpression release];
-    [loopName release];
-    [commandBlock release];
-    [super dealloc];
 }
 
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
     [self eatKeyWord:@"foreach" fromScanner:aScanner isOptional:NO];
+    [self setItemName:[self getArgumentStringFromScanner:aScanner toEnd:NO]];
+    [self setArrayExpression:[self getExpressionFromScanner:aScanner]];
+    [self setLoopName:[self getArgumentStringFromScanner:aScanner toEnd:NO]];
 
-    itemName = [[self getArgumentStringFromScanner:aScanner toEnd:NO] retain];
-    //arrayField = [[self getArgumentStringFromScanner:aScanner toEnd:NO quotes:&arrayQuote] retain];
-    arrayExpression = [[self getExpressionFromScanner:aScanner] retain];
-    loopName = [[self getArgumentStringFromScanner:aScanner toEnd:NO] retain];
-
-    [template pushCommandBlock:commandBlock];
+    [template pushCommandBlock:[self commandBlock]];
 
     return YES;
 }
 
-- (NSString *)loopName
-{
-    return loopName;
-}
-
 - (void)handleEndForeachInTemplate:(MiscMergeTemplate *)template
 {
-    [template popCommandBlock:commandBlock];
+    [template popCommandBlock:[self commandBlock]];
 }
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
-    //id itemArray = [aMerger valueForField:arrayField quoted:arrayQuote];
     id itemArray;
 
-    if ( [arrayExpression isKindOfClass:[MiscMergeListExpression class]] )
-        itemArray = [(MiscMergeListExpression *)arrayExpression evaluateAsListWithEngine:aMerger];
+    if ( [[self arrayExpression] isKindOfClass:[MiscMergeListExpression class]] )
+        itemArray = [(MiscMergeListExpression *)[self arrayExpression] evaluateAsListWithEngine:aMerger];
     else
-        itemArray = [arrayExpression evaluateWithEngine:aMerger];
+        itemArray = [[self arrayExpression] evaluateWithEngine:aMerger];
 
     // If the itemArray is a dictionary we are going to process it just bit differently
     // setting variable name <itemName>Key that has the key of the item we are printing out
     if ([itemArray isKindOfClass:[NSDictionary class]])
     {
-        NSString *indexName = [NSString stringWithFormat:@"%@Index", itemName];
-        NSString *keyName = [NSString stringWithFormat:@"%@Key", itemName];
-        int loopIndex = 0;
+        NSString *indexName = [NSString stringWithFormat:@"%@Index", [self itemName]];
+        NSString *keyName = [NSString stringWithFormat:@"%@Key", [self itemName]];
+        NSUInteger loopIndex = 0;
         NSMutableDictionary *loopContext = [NSMutableDictionary dictionary];
         NSEnumerator *itemEnum = [itemArray keyEnumerator];
         id currObject;
@@ -92,18 +77,18 @@
         while ((exitCode != MiscMergeCommandExitBreak) && (currObject = [itemEnum nextObject]))
         {
             // maybe index should be a string
-            [loopContext setObject:[itemArray objectForKey:currObject] forKey:itemName];
+            [loopContext setObject:[itemArray objectForKey:currObject] forKey:[self itemName]];
             [loopContext setObject:currObject forKey:keyName];
-            [loopContext setObject:[NSNumber numberWithInt:loopIndex] forKey:indexName];
-            exitCode = [aMerger executeCommandBlock:commandBlock];
+            [loopContext setObject:[NSNumber numberWithInteger:loopIndex] forKey:indexName];
+            exitCode = [aMerger executeCommandBlock:[self commandBlock]];
             loopIndex++;
         }
         [aMerger removeContextObject:loopContext];
     }
     else if ([itemArray respondsToSelector:@selector(objectEnumerator)])
     {
-        NSString *indexName = [NSString stringWithFormat:@"%@Index", itemName];
-        int loopIndex = 0;
+        NSString *indexName = [NSString stringWithFormat:@"%@Index", [self itemName]];
+        NSUInteger loopIndex = 0;
         NSMutableDictionary *loopContext = [NSMutableDictionary dictionary];
         NSEnumerator *itemEnum = [itemArray objectEnumerator];
         id currObject;
@@ -113,9 +98,9 @@
         while ((exitCode != MiscMergeCommandExitBreak) && (currObject = [itemEnum nextObject]))
         {
             // maybe index should be a string
-            [loopContext setObject:currObject forKey:itemName];
-            [loopContext setObject:[NSNumber numberWithInt:loopIndex] forKey:indexName];
-            exitCode = [aMerger executeCommandBlock:commandBlock];
+            [loopContext setObject:currObject forKey:[self itemName]];
+            [loopContext setObject:[NSNumber numberWithInteger:loopIndex] forKey:indexName];
+            exitCode = [aMerger executeCommandBlock:[self commandBlock]];
             loopIndex++;
         }
         [aMerger removeContextObject:loopContext];

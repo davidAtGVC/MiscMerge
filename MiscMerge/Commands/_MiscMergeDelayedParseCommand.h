@@ -17,8 +17,7 @@
 #import "MiscMergeCommand.h"
 
 @interface _MiscMergeDelayedParseCommand : MiscMergeCommand
-{
-    NSString *unparsedCommand;
-}
+
+@property (copy, nonatomic) NSString *unparsedCommand;
 
 @end

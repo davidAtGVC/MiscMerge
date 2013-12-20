@@ -20,40 +20,19 @@
 #import <stdlib.h>  //NULL os OSXPB
 
 
-@implementation NSCharacterSet (MiscAdditions)
-
-/*
- * NSCharacterSet's -whitespaceAndNewlineCharacterSet does not contain the
- * carriage return ('\r') character, which can cause problems on NT. The
- * returned set does not contain all Unicode whitespace characters (there are
- * more), but it at least contains everything that isspace() returns true for.
- */
-+ (NSCharacterSet *)allWhitespaceCharacterSet
-{
-    static NSCharacterSet *whiteSet = nil;
-
-    if (whiteSet == nil)
-        whiteSet = [[NSCharacterSet characterSetWithCharactersInString:@" \t\n\r\v\f"] retain];
-
-    return whiteSet;
-}
-
-@end
-
-
 @implementation NSString (MiscAdditions)
 
-- (NSRange)completeRange
+- (NSRange)mm_completeRange
 {
     return NSMakeRange(0, [self length]);
 }
 
-- (id)stringByTrimmingLeadWhitespace
+- (id)mm_stringByTrimmingLeadWhitespace
 {
     NSCharacterSet *nonSpaceSet;
     NSRange validCharRange;
 
-    nonSpaceSet = [[NSCharacterSet allWhitespaceCharacterSet] invertedSet];
+    nonSpaceSet = [[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet];
     validCharRange = [self rangeOfCharacterFromSet:nonSpaceSet];
 
     if (validCharRange.length == 0)
@@ -62,12 +41,12 @@
         return [self substringFromIndex:validCharRange.location];
 }
 
-- (id)stringByTrimmingTailWhitespace
+- (id)mm_stringByTrimmingTailWhitespace
 {
     NSCharacterSet *nonSpaceSet;
     NSRange validCharRange;
 
-    nonSpaceSet = [[NSCharacterSet allWhitespaceCharacterSet] invertedSet];
+    nonSpaceSet = [[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet];
     validCharRange = [self rangeOfCharacterFromSet:nonSpaceSet options:NSBackwardsSearch];
 
     if (validCharRange.length == 0)
@@ -76,14 +55,14 @@
         return [self substringToIndex:validCharRange.location+1];
 }
 
-- (id)stringByTrimmingWhitespace
+- (id)mm_stringByTrimmingWhitespace
 {
-    return [[self stringByTrimmingLeadWhitespace] stringByTrimmingTailWhitespace];
+    return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
-- stringBySquashingWhitespace
+- mm_stringBySquashingWhitespace
 {
-    NSCharacterSet *spaceSet = [NSCharacterSet allWhitespaceCharacterSet];
+    NSCharacterSet *spaceSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
     NSCharacterSet *nonspaceSet = [spaceSet invertedSet];
     NSScanner *scanner = [NSScanner scannerWithString:self];
     NSMutableString *newString = [NSMutableString stringWithCapacity:[self length]];
@@ -107,23 +86,23 @@
     return newString;
 }
 
-- stringBySquashingWhitespace2
+- mm_stringBySquashingWhitespace2
 {
-    return [[self wordArray] componentsJoinedByString:@" "];
+    return [[self mm_wordArray] componentsJoinedByString:@" "];
 }
 
-- (NSString *)letterAtIndex:(unsigned)anIndex
+- (NSString *)mm_letterAtIndex:(NSUInteger)anIndex
 {
     NSRange letterRange = [self rangeOfComposedCharacterSequenceAtIndex:0];
     return [self substringWithRange:letterRange];
 }
 
-- (NSString *)firstLetter
+- (NSString *)mm_firstLetter
 {
-    return [self letterAtIndex:0];
+    return [self mm_letterAtIndex:0];
 }
 
-- (NSUInteger)letterCount
+- (NSUInteger)mm_letterCount
 {
     NSUInteger count = 0;
     NSUInteger selfLength = [self length];
@@ -148,86 +127,33 @@
 }
 
 
-- (NSArray *)wordArray
+- (NSArray *)mm_wordArray
 {
-    NSCharacterSet *spaceSet = [NSCharacterSet allWhitespaceCharacterSet];
-    NSCharacterSet *nonspaceSet = [spaceSet invertedSet];
-    NSMutableArray *wordArray = [NSMutableArray array];
-    NSScanner *scanner = [NSScanner scannerWithString:self];
-    NSString *aWord;
-
-    [scanner setCharactersToBeSkipped:spaceSet];
-
-    while (![scanner isAtEnd])
-    {
-        if ([scanner scanCharactersFromSet:nonspaceSet intoString:&aWord])
-            [wordArray addObject:aWord];
-    }
-
-    return wordArray;
+    return [self componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
-- (unsigned)wordCount;
+- (NSUInteger)mm_wordCount;
 {
-    NSCharacterSet *spaceSet = [NSCharacterSet allWhitespaceCharacterSet];
-    NSCharacterSet *nonspaceSet = [spaceSet invertedSet];
-    NSScanner *scanner = [NSScanner scannerWithString:self];
-    unsigned count = 0;
-
-    [scanner setCharactersToBeSkipped:spaceSet];
-
-    while (![scanner isAtEnd])
-    {
-        if ([scanner scanCharactersFromSet:nonspaceSet intoString:NULL])
-            count++;
-    }
-
-    return count;
+    return [[self mm_wordArray] count];
 }
 
-- (NSString *)wordNum:(unsigned)n
+- (NSString *)mm_wordNum:(NSUInteger)n
 {
-    NSCharacterSet *spaceSet = [NSCharacterSet allWhitespaceCharacterSet];
-    NSCharacterSet *nonspaceSet = [spaceSet invertedSet];
-    NSScanner *scanner = [NSScanner scannerWithString:self];
-    NSString *aWord;
-    int count = 0;
-
-    [scanner setCharactersToBeSkipped:spaceSet];
-
-    while (![scanner isAtEnd])
-    {
-        if ([scanner scanCharactersFromSet:nonspaceSet intoString:&aWord])
-        {
-            if (n == count) return aWord;
-        }
-
-        count++;
-    }
-
-    return nil;
+    NSArray *words = [self mm_wordArray];
+    return (n < [words count] ? words[n] : nil);
 }
 
-- (NSEnumerator *)wordEnumerator
+- (NSEnumerator *)mm_wordEnumerator
 {
-    return [[self wordArray] objectEnumerator];
+    return [[self mm_wordArray] objectEnumerator];
 }
 
-- (NSString *)firstWord
+- (NSString *)mm_firstWord
 {
-    return [self wordNum:0];
+    return [[self mm_wordArray] firstObject];
 }
 
-- stringByReplacingEveryOccurrenceOfString:(NSString *)searchString
-                                withString:(NSString *)replaceString
-{
-    return [self stringByReplacingEveryOccurrenceOfString:searchString
-                                               withString:replaceString
-                                                  options:0];
-}
-
-static NSRange _nextSearchRange(NSString *string, unsigned mask,
-                                NSRange *foundRange, NSUInteger lastIndex, NSUInteger firstIndex)
+static NSRange _mm_nextSearchRange(NSString *string, NSUInteger mask, NSRange *foundRange, NSUInteger lastIndex, NSUInteger firstIndex)
 {
     /*
      * The char range stuff is if we want to use
@@ -274,138 +200,26 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
     return nextRange;
 }
 
-- stringByReplacingEveryOccurrenceOfString:(NSString *)searchString
-                                withString:(NSString *)replaceString
-                                   options:(unsigned)mask
+- (NSUInteger)mm_numOfString:(NSString *)aString
 {
-    NSRange searchRange;
-    NSRange foundRange;
-    NSRange betweenRange;
-    unsigned searchOptions = (mask & (NSCaseInsensitiveSearch|NSLiteralSearch));
-    NSUInteger selfLength = [self length];
-    NSMutableString *newString = [NSMutableString stringWithCapacity:selfLength];
-
-    mask &= ~NSBackwardsSearch;
-    betweenRange.location = 0;
-    searchRange = NSMakeRange (0, selfLength);
-    foundRange  = [self rangeOfString:searchString options:searchOptions range:searchRange];
-
-    while (foundRange.length > 0)
-    {
-        if (foundRange.location > betweenRange.location)
-        {
-            betweenRange.length = foundRange.location - betweenRange.location;
-            [newString appendString: [self substringWithRange:betweenRange]];
-        }
-        [newString appendString: replaceString];
-
-        betweenRange.location = NSMaxRange(foundRange);
-
-        searchRange = _nextSearchRange(self, mask, &foundRange, selfLength, 0);
-        foundRange = [self rangeOfString:searchString options:searchOptions range:searchRange];
-    }
-
-    [newString appendString:[self substringFromIndex:betweenRange.location]];
-
-    return newString;
+    return [self mm_numOfString:aString options:0 range:[self mm_completeRange]];
 }
 
-- stringByReplacingEverySeriesOfCharactersFromSet:(NSCharacterSet *)aSet
-                                       withString:(NSString *)replaceString
+- (NSUInteger)mm_numOfString:(NSString *)aString options:(NSUInteger)mask
 {
-    NSScanner *scanner = [NSScanner scannerWithString:self];
-    NSMutableString *newString = [NSMutableString stringWithCapacity:[self length]];
-    NSString *betweenString;
-
-    [scanner setCharactersToBeSkipped:nil];
-
-    while (![scanner isAtEnd])
-    {
-        if ([scanner scanUpToCharactersFromSet:aSet intoString:&betweenString])
-            [newString appendString:betweenString];
-
-        if ([scanner scanCharactersFromSet:aSet intoString:NULL])
-            [newString appendString:replaceString];
-    }
-
-    return newString;
+    return [self mm_numOfString:aString options:mask range:[self mm_completeRange]];
 }
 
-- stringByReplacingEveryOccurrenceOfCharactersFromSet:(NSCharacterSet *)aSet
-                                           withString:(NSString *)replaceString
+- (NSUInteger)mm_numOfString:(NSString *)aString range:(NSRange)range
 {
-    NSScanner		*scanner = [NSScanner scannerWithString:self];
-    NSMutableString	*newString = [NSMutableString stringWithCapacity:[self length]];
-    NSString		*betweenString;
-
-    [scanner setCharactersToBeSkipped:nil];
-
-    while (![scanner isAtEnd])
-    {
-        if ([scanner scanUpToCharactersFromSet:aSet intoString:&betweenString])
-            [newString appendString:betweenString];
-
-        if ([scanner scanCharactersFromSet:aSet intoString:&betweenString])
-        {
-            NSInteger i, count = [betweenString length];
-            //			int i, count = [betweenString letterCount];
-
-            for (i=0;i<count;i++)
-                [newString appendString:replaceString];
-        }
-    }
-
-    return newString;
+    return [self mm_numOfString:aString options:0 range:range];
 }
 
-/* Is this (using array then componentsJoinedWithString) any faster/slower? */
-- stringByReplacingEveryOccurrenceOfCharactersFromSet:(NSCharacterSet *)aSet
-                                          withString2:(NSString *)replaceString
-{
-    NSScanner *scanner = [NSScanner scannerWithString:self];
-    NSMutableArray *stringArray = [NSMutableArray array];
-    NSString *betweenString;
-
-    [scanner setCharactersToBeSkipped:nil];
-
-    while (![scanner isAtEnd])
-    {
-        if ([scanner scanUpToCharactersFromSet:aSet intoString:&betweenString])
-            [stringArray addObject:betweenString];
-
-        if ([scanner scanCharactersFromSet:aSet intoString:&betweenString])
-        {
-            // int i, count = [betweenString length];
-            NSInteger i, count = [betweenString letterCount];
-
-            for (i=0;i<count;i++)
-                [stringArray addObject:replaceString];
-        }
-    }
-
-    return [stringArray componentsJoinedByString:@""];
-}
-
-- (unsigned)numOfString:(NSString *)aString
-{
-    return [self numOfString:aString options:0 range:[self completeRange]];
-}
-
-- (unsigned)numOfString:(NSString *)aString options:(unsigned)mask
-{
-    return [self numOfString:aString options:mask range:[self completeRange]];
-}
-
-- (unsigned)numOfString:(NSString *)aString range:(NSRange)range
-{
-    return [self numOfString:aString options:0 range:range];
-}
-
-- (unsigned)numOfString:(NSString *)aString options:(unsigned)mask range:(NSRange)range
+- (NSUInteger)mm_numOfString:(NSString *)aString options:(NSUInteger)mask range:(NSRange)range
 {
     NSUInteger lastIndex = NSMaxRange(range);
-    unsigned stringCount = 0;
-    unsigned searchOptions = (mask & (NSCaseInsensitiveSearch|NSLiteralSearch));
+    NSUInteger stringCount = 0;
+    NSUInteger searchOptions = (mask & (NSCaseInsensitiveSearch|NSLiteralSearch));
     NSRange searchRange;
     NSRange foundRange;
 
@@ -415,35 +229,33 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
     while (foundRange.length > 0)
     {
         stringCount++;
-        searchRange = _nextSearchRange(self, mask, &foundRange, lastIndex, range.location);
+        searchRange = _mm_nextSearchRange(self, mask, &foundRange, lastIndex, range.location);
         foundRange  = [self rangeOfString:aString options:searchOptions range:searchRange];
     }
 
     return stringCount;
 }
 
-- (NSRange)rangeOfString:(NSString *)aString occurrenceNum:(int)n
+- (NSRange)mm_rangeOfString:(NSString *)aString occurrenceNum:(NSUInteger)n
 {
-    return [self rangeOfString:aString options:0 occurrenceNum:n range:[self completeRange]];
+    return [self mm_rangeOfString:aString options:0 occurrenceNum:n range:[self mm_completeRange]];
 }
 
-- (NSRange)rangeOfString:(NSString *)aString options:(unsigned)mask occurrenceNum:(int)n
+- (NSRange)mm_rangeOfString:(NSString *)aString options:(NSUInteger)mask occurrenceNum:(NSUInteger)n
 {
-    return [self rangeOfString:aString options:mask occurrenceNum:n
-                                                            range:[self completeRange]];
+    return [self mm_rangeOfString:aString options:mask occurrenceNum:n range:[self mm_completeRange]];
 }
 
-- (NSRange)rangeOfString:(NSString *)aString occurrenceNum:(int)n range:(NSRange)range
+- (NSRange)mm_rangeOfString:(NSString *)aString occurrenceNum:(NSUInteger)n range:(NSRange)range
 {
-    return [self rangeOfString:aString options:0 occurrenceNum:n range:range];
+    return [self mm_rangeOfString:aString options:0 occurrenceNum:n range:range];
 }
 
-- (NSRange)rangeOfString:(NSString *)aString options:(unsigned)mask
-                                       occurrenceNum:(int)n range:(NSRange)range
+- (NSRange)mm_rangeOfString:(NSString *)aString options:(NSUInteger)mask occurrenceNum:(NSUInteger)n range:(NSRange)range
 {
     NSUInteger lastIndex = NSMaxRange(range);
-    unsigned count = 0;
-    unsigned searchOptions = (mask & (~NSAnchoredSearch));
+    NSUInteger count = 0;
+    NSUInteger searchOptions = (mask & (~NSAnchoredSearch));
     NSRange searchRange;
     NSRange foundRange;
 
@@ -452,7 +264,7 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
     while (foundRange.length > 0)
     {
         if (count == n) return foundRange;
-        searchRange = _nextSearchRange(self, mask, &foundRange, lastIndex, range.location);
+        searchRange = _mm_nextSearchRange(self, mask, &foundRange, lastIndex, range.location);
         foundRange = [self rangeOfString:aString options:searchOptions range:searchRange];
         count++;
     }
@@ -460,17 +272,17 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
     return NSMakeRange(NSNotFound, 0);
 }
 
-- (unsigned)numOfCharactersFromSet:(NSCharacterSet *)aSet
+- (NSUInteger)mm_numOfCharactersFromSet:(NSCharacterSet *)aSet
 {
-    return [self numOfCharactersFromSet:(NSCharacterSet *)aSet range:[self completeRange]];
+    return [self mm_numOfCharactersFromSet:(NSCharacterSet *)aSet range:[self mm_completeRange]];
 }
 
-- (unsigned)numOfCharactersFromSet:(NSCharacterSet *)aSet range:(NSRange)range
+- (NSUInteger)mm_numOfCharactersFromSet:(NSCharacterSet *)aSet range:(NSRange)range
 {
     NSUInteger lastIndex = NSMaxRange(range);
     NSRange searchRange = {range.location, lastIndex};
     NSRange foundRange;
-    unsigned characterCount = 0;
+    NSUInteger characterCount = 0;
 
     foundRange = [self rangeOfCharacterFromSet:aSet options:0 range:searchRange];
 
@@ -485,7 +297,7 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
     return characterCount;
 }
 
-- (NSArray *)componentsSeparatedByCharactersFromSet:(NSCharacterSet *)aSet
+- (NSArray *)mm_componentsSeparatedByCharactersFromSet:(NSCharacterSet *)aSet
 {
     NSUInteger selfLength = [self length];
     NSRange searchRange = {0, selfLength};
@@ -511,7 +323,7 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
 }
 
 
-- (NSArray *)componentsSeparatedBySeriesOfCharactersFromSet:(NSCharacterSet *)aSet
+- (NSArray *)mm_componentsSeparatedBySeriesOfCharactersFromSet:(NSCharacterSet *)aSet
 {
     NSScanner *scanner = [NSScanner scannerWithString:self];
     NSMutableArray *stringArray = [NSMutableArray array];
@@ -537,7 +349,7 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
 }
 
 
-- (NSString *)substringFromEndOfString:(NSString *)aString
+- (NSString *)mm_substringFromEndOfString:(NSString *)aString
 {
     NSRange stringRange = [self rangeOfString:aString options:0];
 
@@ -548,7 +360,7 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
 }
 
 
-- (NSString *)substringToString:(NSString *)aString
+- (NSString *)mm_substringToString:(NSString *)aString
 {
     NSRange stringRange = [self rangeOfString:aString options:0];
 
@@ -558,18 +370,18 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
         return nil;  // return @""? return self?
 }
 
-- (BOOL)containsString:(NSString *)aString
+- (BOOL)mm_containsString:(NSString *)aString
 {
-    return [self containsString:aString options:0];
+    return [self mm_containsString:aString options:0];
 }
 
-- (BOOL)containsString:(NSString *)aString options:(unsigned)mask
+- (BOOL)mm_containsString:(NSString *)aString options:(NSUInteger)mask
 {
     NSRange range = [self rangeOfString:aString options:(mask & (~NSAnchoredSearch))];
     return (range.length > 0)? YES : NO;
 }
 
-- (BOOL)hasPrefix:(NSString *)aString options:(unsigned)mask
+- (BOOL)mm_hasPrefix:(NSString *)aString options:(NSUInteger)mask
 {
     NSRange range;
 
@@ -580,7 +392,7 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
     return (range.length > 0 && range.location == 0)? YES : NO;
 }
 
-- (BOOL)hasSuffix:(NSString *)aString options:(unsigned)mask
+- (BOOL)mm_hasSuffix:(NSString *)aString options:(NSUInteger)mask
 {
     NSRange range;
 
@@ -591,9 +403,9 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
 }
 
 
-- (BOOL)isBlank
+- (BOOL)mm_isBlank
 {
-    NSRange spaceRange = [self rangeOfCharacterFromSet:[[NSCharacterSet allWhitespaceCharacterSet] invertedSet]];
+    NSRange spaceRange = [self rangeOfCharacterFromSet:[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet]];
     return (spaceRange.length == 0)? YES : NO;
 }
 
@@ -601,32 +413,5 @@ static NSRange _nextSearchRange(NSString *string, unsigned mask,
 
 @implementation NSMutableString (MiscAdditions)
 
-- (void)replaceEveryOccurrenceOfString:(NSString *)string withString:(NSString *)replaceString
-{
-    [self replaceEveryOccurrenceOfString:string withString:replaceString options:0];
-}
-
-- (void)replaceEveryOccurrenceOfString:(NSString *)string withString:(NSString *)replaceString options:(unsigned)mask
-{
-    NSString *newString = [self stringByReplacingEveryOccurrenceOfString:string withString:replaceString options:mask];
-    [self setString:newString];
-}
-
-- (void)replaceEveryOccurrenceOfCharactersFromSet:(NSCharacterSet *)aSet withString:(NSString *)replaceString
-{
-    NSString *newString = [self stringByReplacingEveryOccurrenceOfCharactersFromSet:aSet withString:replaceString];
-    [self setString:newString];
-}
-
-- (void)replaceEverySeriesOfCharactersFromSet:(NSCharacterSet *)aSet withString:(NSString *)replaceString
-{
-    NSString *newString = [self stringByReplacingEverySeriesOfCharactersFromSet:aSet withString:replaceString];
-    [self setString:newString];
-}
-
-- (void)setStringValue:(NSString *)aString
-{
-    [self setString:aString];
-}
 
 @end

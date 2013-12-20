@@ -19,25 +19,19 @@
 #import <Foundation/NSString.h>
 #import "_MiscMergeProcedureCommand.h"
 #import "MiscMergeCommandBlock.h"
+#import "MiscMergeMacros.h"
 
 @implementation _MiscMergeEndprocedureCommand
-
-- (void)dealloc
-{
-    [procName release];
-    [super dealloc];
-}
 
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
     _MiscMergeProcedureCommand *procCommand = [[template currentCommandBlock] owner];
 
     [self eatKeyWord:@"endprocedure" fromScanner:aScanner isOptional:NO];
-    procName = [[self getArgumentStringFromScanner:aScanner toEnd:NO] retain];
+    [self setProcedureName:[self getArgumentStringFromScanner:aScanner toEnd:NO]];
 
-    if (![procCommand isKindOfCommandClass:@"Procedure"] ||
-        ([procName length] > 0 && [[procCommand procedureName] length] > 0 &&
-         ![procName isEqualToString:[procCommand procedureName]]))
+    if ( ([procCommand isKindOfCommandClass:@"Procedure"] == NO) ||
+        ((mm_IsEmpty([self procedureName]) == NO) && (mm_IsEmpty([procCommand procedureName]) == NO) && ([[self procedureName] isEqualToString:[procCommand procedureName]] == NO)))
     {
         [template reportParseError:@"Mismatched endprocedure command"];
     }

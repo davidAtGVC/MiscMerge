@@ -18,11 +18,10 @@
 
 
 @interface _MiscMergeCallCommand : MiscMergeCommand
-{
-    NSString              *procedureName;
-    NSMutableArray        *argumentArray;
-    NSMutableArray        *quotedArray;
-    BOOL                  alreadyWarned;
-}
+
+@property (strong, nonatomic) NSString *procedureName;
+@property (strong, nonatomic) NSMutableArray *argumentArray;
+@property (strong, nonatomic) NSMutableArray *quotedArray;
+@property (assign, nonatomic) BOOL alreadyWarned;
 
 @end

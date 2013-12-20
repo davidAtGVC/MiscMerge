@@ -21,25 +21,19 @@
 
 @implementation _MiscMergeDebugCommand
 
-- (void)dealloc
-{
-    [theText release];
-    [super dealloc];
-}
-
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
-    if (![self eatKeyWord:@"debug" fromScanner:aScanner isOptional:NO]) return NO;
+    if ([self eatKeyWord:@"debug" fromScanner:aScanner isOptional:NO] == NO)
+        return NO;
 
-    theText = [[[aScanner remainingString] stringByTrimmingLeadWhitespace] retain];
-
+    [self setTheText:[[aScanner mm_remainingString] mm_stringByTrimmingLeadWhitespace]];
     return YES;
 }
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
-    fwrite([theText cStringUsingEncoding:NSUTF8StringEncoding], 1, [theText lengthOfBytesUsingEncoding:NSUTF8StringEncoding], stderr);
-    if (![theText hasSuffix:@"\n"])
+    fwrite([[self theText] cStringUsingEncoding:NSUTF8StringEncoding], 1, [[self theText] lengthOfBytesUsingEncoding:NSUTF8StringEncoding], stderr);
+    if ([[self theText] hasSuffix:@"\n"])
         fputc('\n', stderr);
 
     return MiscMergeCommandExitNormal;

@@ -22,21 +22,15 @@
 
 @implementation _MiscMergeDelayedParseCommand
 
-- (void)dealloc
-{
-    [unparsedCommand release];
-    [super dealloc];
-}
-
 - (BOOL)parseFromString:(NSString *)aString template:(MiscMergeTemplate *)template
 {
-    unparsedCommand = [aString copy];
+    [self setUnparsedCommand:aString];
     return YES;
 }
 
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger
 {
-    MiscMergeTemplate *myTemplate = [aMerger template];
+    MiscMergeTemplate *myTemplate = [aMerger mergeTemplate];
     Class templateClass = [myTemplate class];
     Class mergerClass   = [aMerger class];
     Class commandClass;
@@ -45,11 +39,11 @@
     MiscMergeCommand *newCommand;
     NSString *result;
 
-    [newTemplate setStartDelimiter:[myTemplate startDelimiter]
-                      endDelimiter:[myTemplate endDelimiter]];
-    [newTemplate parseString:unparsedCommand];
+    [newTemplate setStartDelimiter:[myTemplate startDelimiter]];
+    [newTemplate setEndDelimiter:[myTemplate endDelimiter]];
+    [newTemplate parseString:[self unparsedCommand]];
 
-    [newEngine setTemplate:newTemplate];
+    [newEngine setMergeTemplate:newTemplate];
     [newEngine setParentMerge:aMerger];
     [newEngine setMainObject:[aMerger mainObject]];
 
@@ -61,9 +55,6 @@
     [newCommand parseFromString:result template:myTemplate];
     [aMerger executeCommand:newCommand];
 
-    [newCommand release];
-    [newTemplate release];
-    [newEngine release];
     return MiscMergeCommandExitNormal;
 }
 

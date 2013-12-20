@@ -15,29 +15,23 @@
 //
 
 #import "_MiscMergeEndloopCommand.h"
-//#import <Foundation/NSUtilities.h>
 #import <Foundation/NSString.h>
 #import "_MiscMergeLoopCommand.h"
 #import "MiscMergeCommandBlock.h"
+#import "MiscMergeMacros.h"
 
 @implementation _MiscMergeEndloopCommand
 
-- (void)dealloc
-{
-    [loopName release];
-    [super dealloc];
-}
 
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
 {
     _MiscMergeLoopCommand *loopCommand = [[template currentCommandBlock] owner];
 
     [self eatKeyWord:@"endloop" fromScanner:aScanner isOptional:NO];
-    loopName = [[self getArgumentStringFromScanner:aScanner toEnd:NO] retain];
+    [self setLoopName:[self getArgumentStringFromScanner:aScanner toEnd:NO]];
 
-    if (![loopCommand isKindOfCommandClass:@"Loop"] ||
-        ([loopName length] > 0 && [[loopCommand loopName] length] > 0 &&
-         ![loopName isEqualToString:[loopCommand loopName]]))
+    if ( ([loopCommand isKindOfCommandClass:@"Loop"] == NO) ||
+        ((mm_IsEmpty([self loopName]) == NO) && (mm_IsEmpty([loopCommand loopName]) == NO) && ([[self loopName] isEqualToString:[loopCommand loopName]] == NO)))
     {
         [template reportParseError:@"Mismatched endloop command"];
     }

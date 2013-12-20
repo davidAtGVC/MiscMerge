@@ -34,7 +34,7 @@
 
 /*" Help with parsing "*/
 - (BOOL)eatKeyWord:(NSString *)aKeyWord fromScanner:(NSScanner *)scanner isOptional:(BOOL)flag;
-- getArgumentStringFromScanner:(NSScanner *)scanner toEnd:(BOOL)endFlag quotes:(int *)quotes;
+- getArgumentStringFromScanner:(NSScanner *)scanner toEnd:(BOOL)endFlag quotes:(NSInteger *)quotes;
 - getArgumentStringFromScanner:(NSScanner *)scanner toEnd:(BOOL)endFlag;
 - getPromptFromScanner:(NSScanner *)scanner toEnd:(BOOL)endFlag;
 - getPromptableArgumentStringFromScanner:(NSScanner *)scanner wasPrompt:(BOOL *)prompt toEnd:(BOOL)endFlag;
