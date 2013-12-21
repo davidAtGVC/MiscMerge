@@ -98,7 +98,7 @@
 
     for ( ; passedIndex < passedCount; passedIndex++ ) {
         NSString *argName;
-        int argType;
+        NSInteger argType;
 
         id argValue = [passedArgArray objectAtIndex:passedIndex];
 
@@ -108,9 +108,10 @@
         }
 
         argName = [[self argumentArray] objectAtIndex:argumentIndex];
-        argType = [[[self argumentTypes] objectAtIndex:argumentIndex] intValue];
+        argType = [[[self argumentTypes] objectAtIndex:argumentIndex] integerValue];
         
-        switch ( argType ) {
+        switch ( argType )
+        {
             case RequiredArg:
             case OptionalArg:
                 if ( argValue == [NSNull null] )
@@ -137,12 +138,14 @@
 
     /* Insure any optional parameters get set to "" and log any required parameters there were not
         gotten in the call. */
-    if ( argumentIndex < argumentCount ) {
+    if ( argumentIndex < argumentCount )
+    {
         NSMutableString *string = [NSMutableString string];
         
-        for ( ; argumentIndex < argumentCount; argumentIndex++ ) {
+        for ( ; argumentIndex < argumentCount; argumentIndex++ )
+        {
             NSString *argName = [[self argumentArray] objectAtIndex:argumentIndex];
-            int argType = [[[self argumentTypes] objectAtIndex:argumentIndex] intValue];
+            NSInteger argType = [[[self argumentTypes] objectAtIndex:argumentIndex] integerValue];
 
             if ( argType == OptionalArg ) {
                 [procedureContext setObject:@"" forKey:argName];

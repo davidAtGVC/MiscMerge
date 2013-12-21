@@ -28,15 +28,15 @@ BOOL MMBoolValueOfObject(id anObject)
         return (anObject != nil);
 }
 
-int MMIntegerValueOfObject(id anObject)
+NSInteger MMIntegerValueOfObject(id anObject)
 {
     if ([anObject isKindOfClass:[NSNumber class]])
-        return [anObject intValue];
+        return [anObject integerValue];
     
     if ([anObject isKindOfClass:[NSString class]]) {
         NSScanner *scanner = [NSScanner scannerWithString:anObject];
-        int intValue;
-        [scanner scanInt:&intValue];
+        NSInteger intValue;
+        [scanner scanInteger:&intValue];
         return intValue;
     }
 

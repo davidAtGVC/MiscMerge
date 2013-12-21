@@ -36,12 +36,11 @@
     return self;
 }
 
-- (NSString *)validateStep:(int)step
+- (NSString *)validateStep:(NSInteger)step
 {
     if (step == 0)
     {
-        return [NSString stringWithFormat:@"%@: Loop %@ is infinite (no step value).",
-            [self class], [self loopName]];
+        return [NSString stringWithFormat:@"%@: Loop %@ is infinite (no step value).", [self class], [self loopName]];
     }
 
     return nil;

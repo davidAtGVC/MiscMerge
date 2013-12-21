@@ -3,7 +3,7 @@
 #import <Foundation/NSString.h>
 
 extern BOOL MMBoolValueOfObject(id anObject);
-extern int MMIntegerValueOfObject(id anObject);
+extern NSInteger MMIntegerValueOfObject(id anObject);
 extern double MMDoubleValueForObject(id anObject);
 
 extern BOOL MMIsObjectANumber(id anObject);
