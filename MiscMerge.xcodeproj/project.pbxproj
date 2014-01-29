@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		051CF6B41864A6D000CCA3A8 /* NSCharacterSetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 051CF6B31864A6D000CCA3A8 /* NSCharacterSetTests.m */; };
-		051CF6B61864B4FC00CCA3A8 /* KeyValueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 051CF6B51864B4FC00CCA3A8 /* KeyValueTests.m */; };
-		051CF6B81864C36800CCA3A8 /* NSScannerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 051CF6B71864C36800CCA3A8 /* NSScannerTests.m */; };
 		051CF6BA1864C37200CCA3A8 /* NSStringTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 051CF6B91864C37200CCA3A8 /* NSStringTests.m */; };
 		051CF6BC1864C5C600CCA3A8 /* NSMutableStringTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 051CF6BB1864C5C600CCA3A8 /* NSMutableStringTests.m */; };
 		051CF6BD1864D7C900CCA3A8 /* MiscMergeCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 0547E25D186494AB00C9EB24 /* MiscMergeCommand.m */; };
@@ -83,6 +81,46 @@
 		051CF7031864F94D00CCA3A8 /* _MiscMergeSetCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 0547E2211864949B00C9EB24 /* _MiscMergeSetCommand.m */; };
 		051CF7041864F94D00CCA3A8 /* _MiscMergeWhileCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 0547E2221864949B00C9EB24 /* _MiscMergeWhileCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		051CF7051864F94D00CCA3A8 /* _MiscMergeWhileCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 0547E2231864949B00C9EB24 /* _MiscMergeWhileCommand.m */; };
+		0545195318988759001E8D40 /* KeyValue+MiscMergeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545194F18988759001E8D40 /* KeyValue+MiscMergeTests.m */; };
+		0545195418988759001E8D40 /* NSCharacterSet+MiscMergeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195018988759001E8D40 /* NSCharacterSet+MiscMergeTests.m */; };
+		0545195518988759001E8D40 /* NSScanner+MiscMergeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195118988759001E8D40 /* NSScanner+MiscMergeTests.m */; };
+		0545195618988759001E8D40 /* NSString+MiscAdditionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195218988759001E8D40 /* NSString+MiscAdditionsTests.m */; };
+		0545197318988764001E8D40 /* _MiscMergeBreakCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195718988764001E8D40 /* _MiscMergeBreakCommandTests.m */; };
+		0545197418988764001E8D40 /* _MiscMergeCallCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195818988764001E8D40 /* _MiscMergeCallCommandTests.m */; };
+		0545197518988764001E8D40 /* _MiscMergeCommentCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195918988764001E8D40 /* _MiscMergeCommentCommandTests.m */; };
+		0545197618988764001E8D40 /* _MiscMergeContinueCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195A18988764001E8D40 /* _MiscMergeContinueCommandTests.m */; };
+		0545197718988764001E8D40 /* _MiscMergeCopyCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195B18988764001E8D40 /* _MiscMergeCopyCommandTests.m */; };
+		0545197818988764001E8D40 /* _MiscMergeDateCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195C18988764001E8D40 /* _MiscMergeDateCommandTests.m */; };
+		0545197918988764001E8D40 /* _MiscMergeDebugCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195D18988764001E8D40 /* _MiscMergeDebugCommandTests.m */; };
+		0545197A18988764001E8D40 /* _MiscMergeDelayedParseCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195E18988764001E8D40 /* _MiscMergeDelayedParseCommandTests.m */; };
+		0545197B18988764001E8D40 /* _MiscMergeElseCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545195F18988764001E8D40 /* _MiscMergeElseCommandTests.m */; };
+		0545197C18988764001E8D40 /* _MiscMergeElseifCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196018988764001E8D40 /* _MiscMergeElseifCommandTests.m */; };
+		0545197D18988764001E8D40 /* _MiscMergeEndforeachCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196118988764001E8D40 /* _MiscMergeEndforeachCommandTests.m */; };
+		0545197E18988764001E8D40 /* _MiscMergeEndifCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196218988764001E8D40 /* _MiscMergeEndifCommandTests.m */; };
+		0545197F18988764001E8D40 /* _MiscMergeEndloopCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196318988764001E8D40 /* _MiscMergeEndloopCommandTests.m */; };
+		0545198018988764001E8D40 /* _MiscMergeEndprocedureCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196418988764001E8D40 /* _MiscMergeEndprocedureCommandTests.m */; };
+		0545198118988764001E8D40 /* _MiscMergeEndwhileCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196518988764001E8D40 /* _MiscMergeEndwhileCommandTests.m */; };
+		0545198218988764001E8D40 /* _MiscMergeFieldCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196618988764001E8D40 /* _MiscMergeFieldCommandTests.m */; };
+		0545198318988764001E8D40 /* _MiscMergeForeachCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196718988764001E8D40 /* _MiscMergeForeachCommandTests.m */; };
+		0545198418988764001E8D40 /* _MiscMergeIdentifyCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196818988764001E8D40 /* _MiscMergeIdentifyCommandTests.m */; };
+		0545198518988764001E8D40 /* _MiscMergeIfCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196918988764001E8D40 /* _MiscMergeIfCommandTests.m */; };
+		0545198618988764001E8D40 /* _MiscMergeIncludeCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196A18988764001E8D40 /* _MiscMergeIncludeCommandTests.m */; };
+		0545198718988764001E8D40 /* _MiscMergeIndexCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196B18988764001E8D40 /* _MiscMergeIndexCommandTests.m */; };
+		0545198818988764001E8D40 /* _MiscMergeLoopCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196C18988764001E8D40 /* _MiscMergeLoopCommandTests.m */; };
+		0545198918988764001E8D40 /* _MiscMergeNextCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196D18988764001E8D40 /* _MiscMergeNextCommandTests.m */; };
+		0545198A18988764001E8D40 /* _MiscMergeOmitCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196E18988764001E8D40 /* _MiscMergeOmitCommandTests.m */; };
+		0545198B18988764001E8D40 /* _MiscMergeOptionCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545196F18988764001E8D40 /* _MiscMergeOptionCommandTests.m */; };
+		0545198C18988764001E8D40 /* _MiscMergeProcedureCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545197018988764001E8D40 /* _MiscMergeProcedureCommandTests.m */; };
+		0545198D18988764001E8D40 /* _MiscMergeSetCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545197118988764001E8D40 /* _MiscMergeSetCommandTests.m */; };
+		0545198E18988764001E8D40 /* _MiscMergeWhileCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545197218988764001E8D40 /* _MiscMergeWhileCommandTests.m */; };
+		0545199718988771001E8D40 /* MiscMergeCommandBlockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545198F18988771001E8D40 /* MiscMergeCommandBlockTests.m */; };
+		0545199818988771001E8D40 /* MiscMergeCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545199018988771001E8D40 /* MiscMergeCommandTests.m */; };
+		0545199918988771001E8D40 /* MiscMergeDriverTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545199118988771001E8D40 /* MiscMergeDriverTests.m */; };
+		0545199A18988771001E8D40 /* MiscMergeEngineTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545199218988771001E8D40 /* MiscMergeEngineTests.m */; };
+		0545199B18988771001E8D40 /* MiscMergeExpressionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545199318988771001E8D40 /* MiscMergeExpressionTests.m */; };
+		0545199C18988771001E8D40 /* MiscMergeFunctionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545199418988771001E8D40 /* MiscMergeFunctionsTests.m */; };
+		0545199D18988771001E8D40 /* MiscMergeMacrosTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545199518988771001E8D40 /* MiscMergeMacrosTests.m */; };
+		0545199E18988771001E8D40 /* MiscMergeTemplateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0545199618988771001E8D40 /* MiscMergeTemplateTests.m */; };
 		0547E1B41864926A00C9EB24 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0547E1B31864926A00C9EB24 /* Cocoa.framework */; };
 		0547E1BE1864926A00C9EB24 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0547E1BC1864926A00C9EB24 /* InfoPlist.strings */; };
 		0547E1C91864926B00C9EB24 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0547E1C81864926B00C9EB24 /* XCTest.framework */; };
@@ -113,11 +151,49 @@
 /* Begin PBXFileReference section */
 		051CF6B21864A5EB00CCA3A8 /* MiscMergeTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiscMergeTests.h; sourceTree = "<group>"; };
 		051CF6B31864A6D000CCA3A8 /* NSCharacterSetTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCharacterSetTests.m; sourceTree = "<group>"; };
-		051CF6B51864B4FC00CCA3A8 /* KeyValueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyValueTests.m; sourceTree = "<group>"; };
-		051CF6B71864C36800CCA3A8 /* NSScannerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScannerTests.m; sourceTree = "<group>"; };
 		051CF6B91864C37200CCA3A8 /* NSStringTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSStringTests.m; sourceTree = "<group>"; };
 		051CF6BB1864C5C600CCA3A8 /* NSMutableStringTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMutableStringTests.m; sourceTree = "<group>"; };
 		051CF6C01864DBD200CCA3A8 /* MiscMergeMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiscMergeMacros.h; sourceTree = "<group>"; };
+		0545194F18988759001E8D40 /* KeyValue+MiscMergeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "KeyValue+MiscMergeTests.m"; sourceTree = "<group>"; };
+		0545195018988759001E8D40 /* NSCharacterSet+MiscMergeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCharacterSet+MiscMergeTests.m"; sourceTree = "<group>"; };
+		0545195118988759001E8D40 /* NSScanner+MiscMergeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSScanner+MiscMergeTests.m"; sourceTree = "<group>"; };
+		0545195218988759001E8D40 /* NSString+MiscAdditionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MiscAdditionsTests.m"; sourceTree = "<group>"; };
+		0545195718988764001E8D40 /* _MiscMergeBreakCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeBreakCommandTests.m; sourceTree = "<group>"; };
+		0545195818988764001E8D40 /* _MiscMergeCallCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeCallCommandTests.m; sourceTree = "<group>"; };
+		0545195918988764001E8D40 /* _MiscMergeCommentCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeCommentCommandTests.m; sourceTree = "<group>"; };
+		0545195A18988764001E8D40 /* _MiscMergeContinueCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeContinueCommandTests.m; sourceTree = "<group>"; };
+		0545195B18988764001E8D40 /* _MiscMergeCopyCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeCopyCommandTests.m; sourceTree = "<group>"; };
+		0545195C18988764001E8D40 /* _MiscMergeDateCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeDateCommandTests.m; sourceTree = "<group>"; };
+		0545195D18988764001E8D40 /* _MiscMergeDebugCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeDebugCommandTests.m; sourceTree = "<group>"; };
+		0545195E18988764001E8D40 /* _MiscMergeDelayedParseCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeDelayedParseCommandTests.m; sourceTree = "<group>"; };
+		0545195F18988764001E8D40 /* _MiscMergeElseCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeElseCommandTests.m; sourceTree = "<group>"; };
+		0545196018988764001E8D40 /* _MiscMergeElseifCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeElseifCommandTests.m; sourceTree = "<group>"; };
+		0545196118988764001E8D40 /* _MiscMergeEndforeachCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeEndforeachCommandTests.m; sourceTree = "<group>"; };
+		0545196218988764001E8D40 /* _MiscMergeEndifCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeEndifCommandTests.m; sourceTree = "<group>"; };
+		0545196318988764001E8D40 /* _MiscMergeEndloopCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeEndloopCommandTests.m; sourceTree = "<group>"; };
+		0545196418988764001E8D40 /* _MiscMergeEndprocedureCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeEndprocedureCommandTests.m; sourceTree = "<group>"; };
+		0545196518988764001E8D40 /* _MiscMergeEndwhileCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeEndwhileCommandTests.m; sourceTree = "<group>"; };
+		0545196618988764001E8D40 /* _MiscMergeFieldCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeFieldCommandTests.m; sourceTree = "<group>"; };
+		0545196718988764001E8D40 /* _MiscMergeForeachCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeForeachCommandTests.m; sourceTree = "<group>"; };
+		0545196818988764001E8D40 /* _MiscMergeIdentifyCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeIdentifyCommandTests.m; sourceTree = "<group>"; };
+		0545196918988764001E8D40 /* _MiscMergeIfCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeIfCommandTests.m; sourceTree = "<group>"; };
+		0545196A18988764001E8D40 /* _MiscMergeIncludeCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeIncludeCommandTests.m; sourceTree = "<group>"; };
+		0545196B18988764001E8D40 /* _MiscMergeIndexCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeIndexCommandTests.m; sourceTree = "<group>"; };
+		0545196C18988764001E8D40 /* _MiscMergeLoopCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeLoopCommandTests.m; sourceTree = "<group>"; };
+		0545196D18988764001E8D40 /* _MiscMergeNextCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeNextCommandTests.m; sourceTree = "<group>"; };
+		0545196E18988764001E8D40 /* _MiscMergeOmitCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeOmitCommandTests.m; sourceTree = "<group>"; };
+		0545196F18988764001E8D40 /* _MiscMergeOptionCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeOptionCommandTests.m; sourceTree = "<group>"; };
+		0545197018988764001E8D40 /* _MiscMergeProcedureCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeProcedureCommandTests.m; sourceTree = "<group>"; };
+		0545197118988764001E8D40 /* _MiscMergeSetCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeSetCommandTests.m; sourceTree = "<group>"; };
+		0545197218988764001E8D40 /* _MiscMergeWhileCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeWhileCommandTests.m; sourceTree = "<group>"; };
+		0545198F18988771001E8D40 /* MiscMergeCommandBlockTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeCommandBlockTests.m; sourceTree = "<group>"; };
+		0545199018988771001E8D40 /* MiscMergeCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeCommandTests.m; sourceTree = "<group>"; };
+		0545199118988771001E8D40 /* MiscMergeDriverTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeDriverTests.m; sourceTree = "<group>"; };
+		0545199218988771001E8D40 /* MiscMergeEngineTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeEngineTests.m; sourceTree = "<group>"; };
+		0545199318988771001E8D40 /* MiscMergeExpressionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeExpressionTests.m; sourceTree = "<group>"; };
+		0545199418988771001E8D40 /* MiscMergeFunctionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeFunctionsTests.m; sourceTree = "<group>"; };
+		0545199518988771001E8D40 /* MiscMergeMacrosTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeMacrosTests.m; sourceTree = "<group>"; };
+		0545199618988771001E8D40 /* MiscMergeTemplateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MiscMergeTemplateTests.m; sourceTree = "<group>"; };
 		0547E1B01864926A00C9EB24 /* MiscMerge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MiscMerge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0547E1B31864926A00C9EB24 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		0547E1B61864926A00C9EB24 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -242,9 +318,11 @@
 		051CF6B01864A56700CCA3A8 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				0545194F18988759001E8D40 /* KeyValue+MiscMergeTests.m */,
+				0545195018988759001E8D40 /* NSCharacterSet+MiscMergeTests.m */,
+				0545195118988759001E8D40 /* NSScanner+MiscMergeTests.m */,
+				0545195218988759001E8D40 /* NSString+MiscAdditionsTests.m */,
 				051CF6B31864A6D000CCA3A8 /* NSCharacterSetTests.m */,
-				051CF6B51864B4FC00CCA3A8 /* KeyValueTests.m */,
-				051CF6B71864C36800CCA3A8 /* NSScannerTests.m */,
 				051CF6B91864C37200CCA3A8 /* NSStringTests.m */,
 				051CF6BB1864C5C600CCA3A8 /* NSMutableStringTests.m */,
 			);
@@ -254,6 +332,34 @@
 		051CF6B11864A56700CCA3A8 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				0545195718988764001E8D40 /* _MiscMergeBreakCommandTests.m */,
+				0545195818988764001E8D40 /* _MiscMergeCallCommandTests.m */,
+				0545195918988764001E8D40 /* _MiscMergeCommentCommandTests.m */,
+				0545195A18988764001E8D40 /* _MiscMergeContinueCommandTests.m */,
+				0545195B18988764001E8D40 /* _MiscMergeCopyCommandTests.m */,
+				0545195C18988764001E8D40 /* _MiscMergeDateCommandTests.m */,
+				0545195D18988764001E8D40 /* _MiscMergeDebugCommandTests.m */,
+				0545195E18988764001E8D40 /* _MiscMergeDelayedParseCommandTests.m */,
+				0545195F18988764001E8D40 /* _MiscMergeElseCommandTests.m */,
+				0545196018988764001E8D40 /* _MiscMergeElseifCommandTests.m */,
+				0545196118988764001E8D40 /* _MiscMergeEndforeachCommandTests.m */,
+				0545196218988764001E8D40 /* _MiscMergeEndifCommandTests.m */,
+				0545196318988764001E8D40 /* _MiscMergeEndloopCommandTests.m */,
+				0545196418988764001E8D40 /* _MiscMergeEndprocedureCommandTests.m */,
+				0545196518988764001E8D40 /* _MiscMergeEndwhileCommandTests.m */,
+				0545196618988764001E8D40 /* _MiscMergeFieldCommandTests.m */,
+				0545196718988764001E8D40 /* _MiscMergeForeachCommandTests.m */,
+				0545196818988764001E8D40 /* _MiscMergeIdentifyCommandTests.m */,
+				0545196918988764001E8D40 /* _MiscMergeIfCommandTests.m */,
+				0545196A18988764001E8D40 /* _MiscMergeIncludeCommandTests.m */,
+				0545196B18988764001E8D40 /* _MiscMergeIndexCommandTests.m */,
+				0545196C18988764001E8D40 /* _MiscMergeLoopCommandTests.m */,
+				0545196D18988764001E8D40 /* _MiscMergeNextCommandTests.m */,
+				0545196E18988764001E8D40 /* _MiscMergeOmitCommandTests.m */,
+				0545196F18988764001E8D40 /* _MiscMergeOptionCommandTests.m */,
+				0545197018988764001E8D40 /* _MiscMergeProcedureCommandTests.m */,
+				0545197118988764001E8D40 /* _MiscMergeSetCommandTests.m */,
+				0545197218988764001E8D40 /* _MiscMergeWhileCommandTests.m */,
 			);
 			path = Commands;
 			sourceTree = "<group>";
@@ -338,6 +444,14 @@
 			children = (
 				051CF6B21864A5EB00CCA3A8 /* MiscMergeTests.h */,
 				0547E1D41864926B00C9EB24 /* MiscMergeTests.m */,
+				0545198F18988771001E8D40 /* MiscMergeCommandBlockTests.m */,
+				0545199018988771001E8D40 /* MiscMergeCommandTests.m */,
+				0545199118988771001E8D40 /* MiscMergeDriverTests.m */,
+				0545199218988771001E8D40 /* MiscMergeEngineTests.m */,
+				0545199318988771001E8D40 /* MiscMergeExpressionTests.m */,
+				0545199418988771001E8D40 /* MiscMergeFunctionsTests.m */,
+				0545199518988771001E8D40 /* MiscMergeMacrosTests.m */,
+				0545199618988771001E8D40 /* MiscMergeTemplateTests.m */,
 				051CF6B01864A56700CCA3A8 /* Categories */,
 				051CF6B11864A56700CCA3A8 /* Commands */,
 				0547E1CF1864926B00C9EB24 /* Supporting Files */,
@@ -636,11 +750,49 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0545197718988764001E8D40 /* _MiscMergeCopyCommandTests.m in Sources */,
+				0545195518988759001E8D40 /* NSScanner+MiscMergeTests.m in Sources */,
+				0545199A18988771001E8D40 /* MiscMergeEngineTests.m in Sources */,
+				0545199B18988771001E8D40 /* MiscMergeExpressionTests.m in Sources */,
+				0545197818988764001E8D40 /* _MiscMergeDateCommandTests.m in Sources */,
+				0545198518988764001E8D40 /* _MiscMergeIfCommandTests.m in Sources */,
+				0545195618988759001E8D40 /* NSString+MiscAdditionsTests.m in Sources */,
+				0545199718988771001E8D40 /* MiscMergeCommandBlockTests.m in Sources */,
 				051CF6BA1864C37200CCA3A8 /* NSStringTests.m in Sources */,
-				051CF6B61864B4FC00CCA3A8 /* KeyValueTests.m in Sources */,
-				051CF6B81864C36800CCA3A8 /* NSScannerTests.m in Sources */,
+				0545198C18988764001E8D40 /* _MiscMergeProcedureCommandTests.m in Sources */,
+				0545199818988771001E8D40 /* MiscMergeCommandTests.m in Sources */,
+				0545197518988764001E8D40 /* _MiscMergeCommentCommandTests.m in Sources */,
+				0545198D18988764001E8D40 /* _MiscMergeSetCommandTests.m in Sources */,
+				0545198718988764001E8D40 /* _MiscMergeIndexCommandTests.m in Sources */,
+				0545198618988764001E8D40 /* _MiscMergeIncludeCommandTests.m in Sources */,
+				0545199D18988771001E8D40 /* MiscMergeMacrosTests.m in Sources */,
+				0545197918988764001E8D40 /* _MiscMergeDebugCommandTests.m in Sources */,
+				0545197418988764001E8D40 /* _MiscMergeCallCommandTests.m in Sources */,
+				0545198A18988764001E8D40 /* _MiscMergeOmitCommandTests.m in Sources */,
+				0545195318988759001E8D40 /* KeyValue+MiscMergeTests.m in Sources */,
+				0545199E18988771001E8D40 /* MiscMergeTemplateTests.m in Sources */,
+				0545197F18988764001E8D40 /* _MiscMergeEndloopCommandTests.m in Sources */,
+				0545197A18988764001E8D40 /* _MiscMergeDelayedParseCommandTests.m in Sources */,
 				0547E1D51864926B00C9EB24 /* MiscMergeTests.m in Sources */,
 				051CF6BC1864C5C600CCA3A8 /* NSMutableStringTests.m in Sources */,
+				0545195418988759001E8D40 /* NSCharacterSet+MiscMergeTests.m in Sources */,
+				0545198418988764001E8D40 /* _MiscMergeIdentifyCommandTests.m in Sources */,
+				0545197318988764001E8D40 /* _MiscMergeBreakCommandTests.m in Sources */,
+				0545197B18988764001E8D40 /* _MiscMergeElseCommandTests.m in Sources */,
+				0545198318988764001E8D40 /* _MiscMergeForeachCommandTests.m in Sources */,
+				0545197618988764001E8D40 /* _MiscMergeContinueCommandTests.m in Sources */,
+				0545197C18988764001E8D40 /* _MiscMergeElseifCommandTests.m in Sources */,
+				0545198918988764001E8D40 /* _MiscMergeNextCommandTests.m in Sources */,
+				0545198018988764001E8D40 /* _MiscMergeEndprocedureCommandTests.m in Sources */,
+				0545198E18988764001E8D40 /* _MiscMergeWhileCommandTests.m in Sources */,
+				0545198118988764001E8D40 /* _MiscMergeEndwhileCommandTests.m in Sources */,
+				0545199918988771001E8D40 /* MiscMergeDriverTests.m in Sources */,
+				0545197E18988764001E8D40 /* _MiscMergeEndifCommandTests.m in Sources */,
+				0545198218988764001E8D40 /* _MiscMergeFieldCommandTests.m in Sources */,
+				0545198B18988764001E8D40 /* _MiscMergeOptionCommandTests.m in Sources */,
+				0545199C18988771001E8D40 /* MiscMergeFunctionsTests.m in Sources */,
+				0545197D18988764001E8D40 /* _MiscMergeEndforeachCommandTests.m in Sources */,
+				0545198818988764001E8D40 /* _MiscMergeLoopCommandTests.m in Sources */,
 				051CF6B41864A6D000CCA3A8 /* NSCharacterSetTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -677,7 +829,7 @@
 /* Begin XCBuildConfiguration section */
 		0547E1D61864926B00C9EB24 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0547E2791864A12900C9EB24 /* GVCDebug.xcconfig */;
+			baseConfigurationReference = 0547E27A1864A12900C9EB24 /* GVCDebugTest.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -689,6 +841,10 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -727,6 +883,10 @@
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
@@ -748,6 +908,7 @@
 		0547E1D91864926B00C9EB24 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -763,6 +924,7 @@
 		0547E1DA1864926B00C9EB24 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -777,7 +939,6 @@
 		};
 		0547E1DC1864926B00C9EB24 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0547E27A1864A12900C9EB24 /* GVCDebugTest.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MiscMerge.framework/Versions/A/MiscMerge";
 				COMBINE_HIDPI_IMAGES = YES;

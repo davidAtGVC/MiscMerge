@@ -22,11 +22,18 @@
 @class NSNumber;
 @class MiscMergeExpression;
 
+/**
+ * class
+ */
 @interface MiscMergeCommand : NSObject
 {}
 
-/*" Basic methods "*/
+/**
+    " Basic methods "
+ * @param aString the addresses stuff
+ */
 - (BOOL)parseFromString:(NSString *)aString template:(MiscMergeTemplate *)template;
+
 - (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template;
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger;
 

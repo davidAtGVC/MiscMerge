@@ -18,7 +18,7 @@
 
 @implementation NSScanner (MiscMerge)
 
-- (BOOL)mm_scanLetterIntoString:(NSString **)aString
+- (BOOL)mm_scanLetterIntoString:(__autoreleasing NSString **)aString
 {
     NSRange letterRange;
 
@@ -34,7 +34,8 @@
     else
     {
         [self setScanLocation:NSMaxRange(letterRange)];
-        if (aString) *aString = [[self string] substringWithRange:letterRange];
+        if (aString)
+            *aString = [[self string] substringWithRange:letterRange];
         return YES;
     }
 }
