@@ -25,6 +25,7 @@
 
 - (void)test_parseFromRawString
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 // ## END MARKER

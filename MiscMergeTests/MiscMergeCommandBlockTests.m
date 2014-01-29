@@ -25,14 +25,17 @@
 
 - (void)test_initWithOwner
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_addCommand
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_removeCommand
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 // ## END MARKER

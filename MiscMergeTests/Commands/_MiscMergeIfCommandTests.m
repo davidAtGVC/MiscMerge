@@ -25,14 +25,17 @@
 
 - (void)test_handleElseInTemplate
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_handleEndifInTemplate
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_evaluateExpressionInMerger
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 // ## END MARKER

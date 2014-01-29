@@ -23,32 +23,40 @@
     [super tearDown];
 }
 
+
 - (void)test_mm_scanLetterIntoString
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_mm_scanString
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_mm_remainingRange
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_mm_remainingString
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_mm_skipPastSkipCharacters
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_mm_scanCharacter
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_mm_peekNextCharacter
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 // ## END MARKER

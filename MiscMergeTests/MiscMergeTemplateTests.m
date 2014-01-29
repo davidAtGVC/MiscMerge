@@ -23,56 +23,85 @@
     [super tearDown];
 }
 
-- (void)test_init
-{
-}
 
-- (void)test_initWithString
+- (void)test_classForCommand
 {
-}
-
-- (void)test_initWithContentsOfFile
-{
-}
-
-- (void)test_resolveTemplateFilename
-{
-}
-
-- (void)test_pushCommandBlock
-{
-}
-
-- (void)test_popCommandBlock
-{
-}
-
-- (void)test_popCommandBlock
-{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_currentCommandBlock
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
-- (void)test_parseContentsOfFile
+- (void)test_defaultEndDelimiter
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
-- (void)test_parseString
+- (void)test_defaultStartDelimiter
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
-- (void)test_reportParseError
+- (void)test_init
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
-- (void)test_classForCommand
+- (void)test_initWithContentsOfFile
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+}
+
+- (void)test_initWithString
+{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 - (void)test_mergeTemplate_resolveTemplateFilename
 {
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+}
+
+- (void)test_parseContentsOfFile
+{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+}
+
+- (void)test_parseString
+{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+}
+
+- (void)test_popCommandBlock
+{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+}
+
+- (void)test_pushCommandBlock
+{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+}
+
+- (void)test_reportParseError
+{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+}
+
+- (void)test_resolveTemplateFilename
+{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+}
+
+- (void)test_template
+{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+}
+
+- (void)test_templateWithString
+{
+    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 // ## END MARKER
