@@ -24,6 +24,30 @@
 #import "MiscMergeFunctions.h"
 
 @implementation MiscMergeCommand
+
++ (Class)classForCommand:(NSString *)aCommand
+{
+    NSString *commandWord = [[aCommand mm_firstWord] capitalizedString];
+
+    NSString *className = [NSString stringWithFormat:@"MiscMerge%@Command", commandWord];
+    Class theClass = NSClassFromString(className);
+    
+    if (theClass == Nil)
+    {
+        className = [NSString stringWithFormat:@"_MiscMerge%@Command", commandWord];
+        theClass = NSClassFromString(className);
+    }
+    
+    if (theClass == Nil)
+    {
+        theClass = [self classForCommand:@"Field"];
+    }
+    
+    return theClass;
+}
+
+
+
 /*"
  * The MiscMergeCommand class implements a merge command.  Since the
  * MiscKit merge engine can dynamically add new commands, it is possible to

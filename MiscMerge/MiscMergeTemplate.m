@@ -226,32 +226,6 @@
 
     return ( [resolvedName length] > 0 ) ? resolvedName : resolveName;
 }
-        
-
-- (Class)_classForCommand:(NSString *)realCommand
-{
-    NSString *className = [NSString stringWithFormat:@"MiscMerge%@Command", realCommand];
-    Class theClass = NSClassFromString(className);
-
-    if (theClass == Nil)
-    {
-        className = [NSString stringWithFormat:@"_MiscMerge%@Command", realCommand];
-        theClass = NSClassFromString(className);
-    }
-
-    if (theClass == Nil)
-    {
-        theClass = [self classForCommand:@"Field"];
-    }
-
-    return theClass;
-}
-
-- (Class)classForCommand:(NSString *)aCommand
-{
-    return [self _classForCommand:[[aCommand mm_firstWord] capitalizedString]];
-}
-
 
 /*"
  * Reports the given error message, prefixed with filename and current line
@@ -305,7 +279,7 @@
     would result in no data written to the output, then we don't do anything here. */
     if ( mm_IsEmpty(copyString) == NO )
     {
-        id command = [[[self _classForCommand:@"Copy"] alloc] init];
+        id command = [[[MiscMergeCommand classForCommand:@"Copy"] alloc] init];
         /* Pass the trimmed string, or the passed in string depending if we are trimming strings */
         [command parseFromRawString:copyString];
         [self _addCommand:command];
@@ -316,7 +290,7 @@
 
 - (void)_addCommandString:(NSString *)commandString
 {
-    Class commandClass = [self classForCommand:commandString];
+    Class commandClass = [MiscMergeCommand classForCommand:commandString];
     id command = [[commandClass alloc] init];
     [self _addCommand:command];
     [command parseFromString:commandString template:self];
@@ -409,7 +383,7 @@
                 /* Special hack for the delayed parsing stuff. Hm. */
                 if (maxNestingLevel > 1)
                 {
-                    id command = [[[self _classForCommand:@"DelayedParse"] alloc] init];
+                    id command = [[[MiscMergeCommand classForCommand:@"DelayedParse"] alloc] init];
                     _lineNumber += [accumString mm_numOfString:@"\n"];
                     [command parseFromString:accumString template:self];
                     [self _addCommand:command];
