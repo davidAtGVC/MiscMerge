@@ -1,0 +1,59 @@
+This is the test merge template.
+
+f1	:f2	:f3	:f4	:f5	:f6	:f7	:f8
+«f1»	:«f2»	:«f3»	:«f4»	:«f5»	:«f6»	:«f7»	:«f8»
+
+Testing value that dereferences another key: f8 = \««f8»\» ==>> ««f8»»
+
+\« escape \» «comment \« just to see if we can escape right...»«comment \» just to see if we can escape right...»
+
+Test of nested if/then conditions:
+
+if f2
+	if f3
+		if f4	return	7
+		else	return	6
+		endif
+	else
+		if f4	return 	5
+		else	return	4
+		endif
+	endif
+else
+	if f3
+		if f4	return	3
+		else	return	2
+		endif
+	else
+		if f4	return	1
+		else	return	0
+		endif
+	endif
+endif
+
+This is document #«if f2»«if f3»«if f4»7«else»6«endif»«else»«if f4»5«else»4«endif»«endif»«else»«if f3»«if f4»3«else»2«endif»«else»«if f4»1«else»0«endif»«endif»«endif».
+
+(That should be document #«f5»).
+
+Field 6 is "«f6»" and field 7 is "«f7»".  Testing conditionals with them:
+
+			f6			f7
+x
+
+x = 6			«if f6  = 6»YES«else»NO«endif»			«if f7  = 6»YES«else»NO«endif»				
+x = orange		«if f6  = orange »YES«else»NO«endif»			«if f7  = orange»YES«else»NO«endif»
+
+x > 6			«if f6  > 6»YES«else»NO«endif»			«if f7  > 6»YES«else»NO«endif»
+x > orange		«if f6  > orange »YES«else»NO«endif»			«if f7  > orange»YES«else»NO«endif»
+
+x >= 6			«if f6 >= 6»YES«else»NO«endif»			«if f7 >= 6»YES«else»NO«endif»
+x >= orange		«if f6 >= orange »YES«else»NO«endif»			«if f7 >= orange»YES«else»NO«endif»
+
+x < 6			«if f6  < 6»YES«else»NO«endif»			«if f7  < 6»YES«else»NO«endif»
+x < orange		«if f6  < orange »YES«else»NO«endif»			«if f7  < orange»YES«else»NO«endif»
+
+x <= 6			«if f6 <= 6»YES«else»NO«endif»			«if f7 <= 6»YES«else»NO«endif»
+x <= orange		«if f6 <= orange »YES«else»NO«endif»			«if f7 <= orange»YES«else»NO«endif»
+
+x != 6			«if f6 != 6 »YES«else»NO«endif»			«if f7 != 6 »YES«else»NO«endif»
+x != orange		«if f6 != orange »YES«else»NO«endif»			«if f7 != orange»YES«else»NO«endif»

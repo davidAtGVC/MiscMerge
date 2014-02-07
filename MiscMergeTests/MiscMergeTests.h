@@ -9,6 +9,8 @@
 #ifndef MiscMerge_MiscMergeTests_h
 #define MiscMerge_MiscMergeTests_h
 
+#import "MiscMerge.h"
+#import "NSData+Utilities.h"
 
 @interface MiscMergeTests : XCTestCase
 

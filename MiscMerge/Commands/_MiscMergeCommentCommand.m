@@ -23,4 +23,12 @@
     return YES;
 }
 
+- (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
+{
+    if ([self eatKeyWord:@"comment" fromScanner:aScanner isOptional:NO] == NO)
+        return NO;
+    
+    return YES;
+}
+
 @end

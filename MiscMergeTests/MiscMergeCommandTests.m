@@ -7,10 +7,8 @@
 
 #import <XCTest/XCTest.h>
 #import "MiscMergeTests.h"
-#import "MiscMergeCommand.h"
+#import "MiscMergeCommandTests.h"
 
-@interface MiscMergeCommandTests : MiscMergeTests
-@end
 
 @implementation MiscMergeCommandTests
 - (void)setUp
@@ -23,6 +21,23 @@
     [super tearDown];
 }
 
+- (NSString *)commandName
+{
+    return @"";
+}
+
+//- (void)test_classForCommand
+//{
+//    MiscMergeTemplate *template = [[MiscMergeTemplate alloc] init];
+//    Class classFound = [template classForCommand:@"include"];
+//    XCTAssertTrue(classFound == NSClassFromString(@"_MiscMergeIncludeCommand"), @"Wrong class found %@", NSStringFromClass(classFound));
+//    
+//    classFound = [template classForCommand:@"notFound"];
+//    XCTAssertTrue(classFound == NSClassFromString(@"_MiscMergeFieldCommand"), @"Wrong class found %@", NSStringFromClass(classFound));
+//    
+//    classFound = [template classForCommand:@"endif this has spaces"];
+//    XCTAssertTrue(classFound == NSClassFromString(@"_MiscMergeEndifCommand"), @"Wrong class found %@", NSStringFromClass(classFound));
+//}
 
 - (void)test_parseFromString_template
 {

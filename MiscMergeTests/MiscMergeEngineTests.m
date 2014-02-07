@@ -10,16 +10,19 @@
 #import "MiscMergeEngine.h"
 
 @interface MiscMergeEngineTests : MiscMergeTests
+@property (strong, nonatomic) MiscMergeEngine *engine;
 @end
 
 @implementation MiscMergeEngineTests
 - (void)setUp
 {
     [super setUp];
+    [self setEngine:[[MiscMergeEngine alloc] init]];
 }
 
 - (void)tearDown
 {
+    [self setEngine:nil];
     [super tearDown];
 }
 

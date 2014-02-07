@@ -22,6 +22,14 @@
     return YES;
 }
 
+- (BOOL)parseFromScanner:(NSScanner *)aScanner template:(MiscMergeTemplate *)template
+{
+    if ([self eatKeyWord:@"break" fromScanner:aScanner isOptional:NO] == NO)
+        return NO;
+
+    return YES;
+}
+
 - (MiscMergeCommandExitType)executeForMerge:(MiscMergeEngine *)aMerger {
     return MiscMergeCommandExitBreak;
 }

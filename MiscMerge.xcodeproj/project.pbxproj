@@ -119,6 +119,9 @@
 		054519D618988F2B001E8D40 /* _MiscMergeProcedureCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 054519BA18988F2B001E8D40 /* _MiscMergeProcedureCommandTests.m */; };
 		054519D718988F2B001E8D40 /* _MiscMergeSetCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 054519BB18988F2B001E8D40 /* _MiscMergeSetCommandTests.m */; };
 		054519D818988F2B001E8D40 /* _MiscMergeWhileCommandTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 054519BC18988F2B001E8D40 /* _MiscMergeWhileCommandTests.m */; };
+		054519DA1898A48B001E8D40 /* Simple.mmtemplate in Resources */ = {isa = PBXBuildFile; fileRef = 054519D91898A48B001E8D40 /* Simple.mmtemplate */; };
+		054519DE1898A581001E8D40 /* MiscMerge.h in Headers */ = {isa = PBXBuildFile; fileRef = 054519DD1898A581001E8D40 /* MiscMerge.h */; };
+		054519E11898B4C5001E8D40 /* NSData+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 054519E01898B4C5001E8D40 /* NSData+Utilities.m */; };
 		0547E1B41864926A00C9EB24 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0547E1B31864926A00C9EB24 /* Cocoa.framework */; };
 		0547E1BE1864926A00C9EB24 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0547E1BC1864926A00C9EB24 /* InfoPlist.strings */; };
 		0547E1C91864926B00C9EB24 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0547E1C81864926B00C9EB24 /* XCTest.framework */; };
@@ -190,6 +193,11 @@
 		054519BA18988F2B001E8D40 /* _MiscMergeProcedureCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeProcedureCommandTests.m; sourceTree = "<group>"; };
 		054519BB18988F2B001E8D40 /* _MiscMergeSetCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeSetCommandTests.m; sourceTree = "<group>"; };
 		054519BC18988F2B001E8D40 /* _MiscMergeWhileCommandTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MiscMergeWhileCommandTests.m; sourceTree = "<group>"; };
+		054519D91898A48B001E8D40 /* Simple.mmtemplate */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Simple.mmtemplate; sourceTree = "<group>"; };
+		054519DB1898A52E001E8D40 /* BuildKitHeader.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = BuildKitHeader.sh; sourceTree = "<group>"; };
+		054519DD1898A581001E8D40 /* MiscMerge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiscMerge.h; sourceTree = "<group>"; };
+		054519DF1898B4C5001E8D40 /* NSData+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Utilities.h"; sourceTree = "<group>"; };
+		054519E01898B4C5001E8D40 /* NSData+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Utilities.m"; sourceTree = "<group>"; };
 		0547E1B01864926A00C9EB24 /* MiscMerge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MiscMerge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0547E1B31864926A00C9EB24 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		0547E1B61864926A00C9EB24 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -287,6 +295,7 @@
 		0547E27E1864A12900C9EB24 /* MiscMerge.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = MiscMerge.rtf; sourceTree = "<group>"; };
 		0547E27F1864A28D00C9EB24 /* NSCharacterSet+MiscMerge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCharacterSet+MiscMerge.h"; sourceTree = "<group>"; };
 		0547E2801864A28D00C9EB24 /* NSCharacterSet+MiscMerge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCharacterSet+MiscMerge.m"; sourceTree = "<group>"; };
+		05A7D343189C16270068559C /* MiscMergeCommandTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MiscMergeCommandTests.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -326,11 +335,11 @@
 		051CF6B11864A56700CCA3A8 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				054519A518988F2B001E8D40 /* _MiscMergeCopyCommandTests.m */,
 				054519A118988F2B001E8D40 /* _MiscMergeBreakCommandTests.m */,
 				054519A218988F2B001E8D40 /* _MiscMergeCallCommandTests.m */,
 				054519A318988F2B001E8D40 /* _MiscMergeCommentCommandTests.m */,
 				054519A418988F2B001E8D40 /* _MiscMergeContinueCommandTests.m */,
-				054519A518988F2B001E8D40 /* _MiscMergeCopyCommandTests.m */,
 				054519A618988F2B001E8D40 /* _MiscMergeDateCommandTests.m */,
 				054519A718988F2B001E8D40 /* _MiscMergeDebugCommandTests.m */,
 				054519A818988F2B001E8D40 /* _MiscMergeDelayedParseCommandTests.m */,
@@ -401,6 +410,7 @@
 		0547E1B91864926A00C9EB24 /* MiscMerge */ = {
 			isa = PBXGroup;
 			children = (
+				054519DD1898A581001E8D40 /* MiscMerge.h */,
 				051CF6C01864DBD200CCA3A8 /* MiscMergeMacros.h */,
 				0547E25C186494AB00C9EB24 /* MiscMergeCommand.h */,
 				0547E25D186494AB00C9EB24 /* MiscMergeCommand.m */,
@@ -436,9 +446,12 @@
 		0547E1CE1864926B00C9EB24 /* MiscMergeTests */ = {
 			isa = PBXGroup;
 			children = (
+				054519DF1898B4C5001E8D40 /* NSData+Utilities.h */,
+				054519E01898B4C5001E8D40 /* NSData+Utilities.m */,
 				051CF6B21864A5EB00CCA3A8 /* MiscMergeTests.h */,
 				0547E1D41864926B00C9EB24 /* MiscMergeTests.m */,
 				0545198F18988771001E8D40 /* MiscMergeCommandBlockTests.m */,
+				05A7D343189C16270068559C /* MiscMergeCommandTests.h */,
 				0545199018988771001E8D40 /* MiscMergeCommandTests.m */,
 				0545199118988771001E8D40 /* MiscMergeDriverTests.m */,
 				0545199218988771001E8D40 /* MiscMergeEngineTests.m */,
@@ -543,12 +556,14 @@
 		0547E2781864A12900C9EB24 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				054519DB1898A52E001E8D40 /* BuildKitHeader.sh */,
 				0547E2791864A12900C9EB24 /* GVCDebug.xcconfig */,
 				0547E27A1864A12900C9EB24 /* GVCDebugTest.xcconfig */,
 				0547E27B1864A12900C9EB24 /* GVCRelease.xcconfig */,
 				0547E27C1864A12900C9EB24 /* MiscKit License Notes.markdown */,
 				0547E27D1864A12900C9EB24 /* MiscKit License.markdown */,
 				0547E27E1864A12900C9EB24 /* MiscMerge.rtf */,
+				054519D91898A48B001E8D40 /* Simple.mmtemplate */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -568,6 +583,7 @@
 				0547E1E51864936F00C9EB24 /* KeyValue+MiscMerge.h in Headers */,
 				051CF6CC1864E84F00CCA3A8 /* MiscMergeTemplate.h in Headers */,
 				051CF6E21864F94D00CCA3A8 /* _MiscMergeEndforeachCommand.h in Headers */,
+				054519DE1898A581001E8D40 /* MiscMerge.h in Headers */,
 				051CF6C91864E75000CCA3A8 /* MiscMergeExpression.h in Headers */,
 				051CF6F21864F94D00CCA3A8 /* _MiscMergeIfCommand.h in Headers */,
 				051CF6FE1864F94D00CCA3A8 /* _MiscMergeOptionCommand.h in Headers */,
@@ -610,6 +626,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0547E1D81864926B00C9EB24 /* Build configuration list for PBXNativeTarget "MiscMerge" */;
 			buildPhases = (
+				054519DC1898A55E001E8D40 /* ShellScript */,
 				0547E1AB1864926A00C9EB24 /* Sources */,
 				0547E1AC1864926A00C9EB24 /* Frameworks */,
 				0547E1AD1864926A00C9EB24 /* Headers */,
@@ -688,10 +705,28 @@
 			buildActionMask = 2147483647;
 			files = (
 				0547E1D31864926B00C9EB24 /* InfoPlist.strings in Resources */,
+				054519DA1898A48B001E8D40 /* Simple.mmtemplate in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		054519DC1898A55E001E8D40 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${PROJECT_DIR}/Resources/BuildKitHeader.sh";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		0547E1AB1864926A00C9EB24 /* Sources */ = {
@@ -752,6 +787,7 @@
 				054519CC18988F2B001E8D40 /* _MiscMergeFieldCommandTests.m in Sources */,
 				0545195618988759001E8D40 /* NSString+MiscAdditionsTests.m in Sources */,
 				054519C918988F2B001E8D40 /* _MiscMergeEndloopCommandTests.m in Sources */,
+				054519E11898B4C5001E8D40 /* NSData+Utilities.m in Sources */,
 				054519C318988F2B001E8D40 /* _MiscMergeDebugCommandTests.m in Sources */,
 				054519D618988F2B001E8D40 /* _MiscMergeProcedureCommandTests.m in Sources */,
 				054519C718988F2B001E8D40 /* _MiscMergeEndforeachCommandTests.m in Sources */,

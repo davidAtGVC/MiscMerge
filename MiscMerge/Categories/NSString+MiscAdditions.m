@@ -93,8 +93,12 @@
 
 - (NSString *)mm_letterAtIndex:(NSUInteger)anIndex
 {
-    NSRange letterRange = [self rangeOfComposedCharacterSequenceAtIndex:0];
-    return [self substringWithRange:letterRange];
+    NSRange letterRange = NSMakeRange( NSNotFound, 0);
+    if (([self length] > 0) && (anIndex < [self length]))
+    {
+        letterRange = [self rangeOfComposedCharacterSequenceAtIndex:anIndex];
+    }
+    return (letterRange.location == NSNotFound ? @"" : [self substringWithRange:letterRange]);
 }
 
 - (NSString *)mm_firstLetter

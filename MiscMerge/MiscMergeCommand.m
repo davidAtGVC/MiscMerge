@@ -14,10 +14,12 @@
 //	for a list of all applicable permissions and restrictions.
 //
 
-#import "MiscMergeCommand.h"
+#import <stdlib.h>  // NULL on OSX
+
 #import <Foundation/NSCharacterSet.h>
 #import <Foundation/NSArray.h>
-#import <stdlib.h>  // NULL on OSX
+
+#import "MiscMergeCommand.h"
 #import "NSScanner+MiscMerge.h"
 #import "MiscMergeExpression.h"
 #import "NSString+MiscAdditions.h"

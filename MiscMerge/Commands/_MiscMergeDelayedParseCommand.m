@@ -50,7 +50,7 @@
     result = [newEngine execute:self];
 
     /* Hrm. */
-    commandClass = [myTemplate classForCommand:result];
+    commandClass = [MiscMergeCommand classForCommand:result];
     newCommand = [[commandClass alloc] init];
     [newCommand parseFromString:result template:myTemplate];
     [aMerger executeCommand:newCommand];

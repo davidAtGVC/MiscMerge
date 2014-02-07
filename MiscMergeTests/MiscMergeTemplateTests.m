@@ -23,15 +23,37 @@
     [super tearDown];
 }
 
-
-- (void)test_classForCommand
+- (NSString *)defaultTemplateString
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    NSString *s = [MiscMergeTemplate defaultStartDelimiter];
+    NSString *e = [MiscMergeTemplate defaultEndDelimiter];
+    
+    NSString *copy1 = [NSString stringWithFormat:@"Testing value that dereferences another key: f8 = \\%@", s];
+    NSString *field = [NSString stringWithFormat:@"%@f8%@", s, e];
+    NSString *copy2 = [NSString stringWithFormat:@"\\%@ ==>> ", e];
+    NSString *parse = [NSString stringWithFormat:@"%@%@f8%@%@", s, s, e, e];
+
+    return [NSString stringWithFormat:@"%@%@%@%@", copy1, field, copy2, parse];
 }
 
 - (void)test_currentCommandBlock
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    NSString *string = [self defaultTemplateString];
+    MiscMergeTemplate *template = [[MiscMergeTemplate alloc] initWithString:string];
+    MiscMergeCommandBlock *topBlock = [template currentCommandBlock];
+
+    XCTAssertTrue([topBlock class] == NSClassFromString(@"MiscMergeCommandBlock"), @"Wrong class found %@", NSStringFromClass([topBlock class]));
+    XCTAssertNotNil([topBlock commandArray], @"No commands found");
+    XCTAssertTrue([[topBlock commandArray] count] == 4, @"Incorrect number of parsed commands");
+    
+    _MiscMergeCopyCommand *copy = [[topBlock commandArray] objectAtIndex:0];
+    NSString *copy1 = [NSString stringWithFormat:@"Testing value that dereferences another key: f8 = %@", [MiscMergeTemplate defaultStartDelimiter]];
+    XCTAssertEqualObjects([copy theText], copy1, @"First copy command has incorrect content %@", [copy theText]);
+    
+//    _MiscMergeFieldCommand *field = [[topBlock commandArray] objectAtIndex:1];
+//    MiscMergeExpression *expression = [field expression];
+    
+    NSLog(@"Commands = %@", [topBlock commandArray]);
 }
 
 - (void)test_defaultEndDelimiter
